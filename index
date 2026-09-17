@@ -33,13 +33,32 @@ main{padding:34px 42px 55px}.panel{background:#fff;border:1px solid var(--line);
 .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:15px}.calc-card{border:1px solid var(--line);border-radius:16px;padding:19px;background:#fff}.calc-card h4{margin:0 0 13px;font-size:16px;font-weight:700}.mini-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}.mini{background:#faf7f2;border-radius:11px;padding:11px}.mini span{font-size:10.5px;color:var(--muted);font-weight:700;letter-spacing:.02em;font-family:'Manrope','Noto Sans Bengali',sans-serif}.mini strong{display:block;margin-top:5px;font-size:17px}.note{font-size:12px;color:#7a7367;line-height:1.5;margin-top:12px;font-family:'Manrope','Noto Sans Bengali',sans-serif}.formula{margin-top:12px;padding:12px 14px;border-radius:11px;background:var(--graphite2);color:#c9ccd0;font-size:11.5px;line-height:1.6}
 .ref-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}.pillbox{display:flex;gap:7px;flex-wrap:wrap}.pill{padding:7px 10px;border-radius:8px;background:#f6f2ec;border:1px solid var(--line);font-size:12px;font-weight:600}
 .section{display:none}.section.active{display:block}.footer{text-align:center;padding:26px 20px 34px;color:var(--muted);font-size:12px}.footer b{color:var(--ink)}.lang-badge{font-weight:700}
+.gate{position:fixed;inset:0;z-index:100;display:flex;align-items:center;justify-content:center;background:linear-gradient(160deg,var(--graphite2),var(--graphite));padding:20px}
+.gate-card{width:100%;max-width:360px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.14);border-radius:18px;padding:32px 28px;text-align:center}
+.gate-card h2{color:#fff;font-size:20px;margin:0 0 6px;font-weight:700}
+.gate-card p{color:#9a9ea3;font-size:13px;margin:0 0 22px}
+.gate-card input{width:100%;height:46px;border-radius:10px;border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.06);color:#fff;padding:0 14px;font:inherit;margin-bottom:12px;outline:none;text-align:center;letter-spacing:.05em}
+.gate-card input:focus{border-color:var(--copper-light)}
+.gate-card .btn{display:flex;align-items:center}
+.gate-error{color:#e77;font-size:12.5px;min-height:18px;margin-top:12px}
 @media(max-width:1050px){body{padding:0}.shell{border-radius:0;min-height:100vh}.hero{grid-template-columns:1fr}.hero-cards{grid-template-columns:repeat(3,1fr)}.metric.wide{grid-column:auto}.cards,.grid3,.grid4{grid-template-columns:1fr 1fr}.kpis{grid-template-columns:1fr 1fr}.topbar{padding:0 18px}.hero{padding:34px 24px}main{padding:26px 18px}.tabs{overflow:auto;justify-content:flex-start}}
 @media(max-width:680px){.nav .hide-mobile{display:none}.hero-cards,.cards,.grid2,.grid3,.grid4,.ref-grid{grid-template-columns:1fr}.kpis{grid-template-columns:1fr}.hero h2{font-size:38px}.panel{padding:18px}.brand h1{font-size:15px}.tabs{top:84px;gap:6px}.topbar{height:84px}}
 @media print{body{background:white;padding:0}.shell{box-shadow:none;border-radius:0}.topbar,.tabs,.hero-actions,.toolbar-right,.delete{display:none!important}.hero{padding:20px;background:white}.hero-cards{display:none}main{padding:10px}.panel{box-shadow:none;break-inside:avoid}.section{display:block!important}}
 </style>
 </head>
 <body>
-<div class="shell">
+<div id="loginGate" class="gate">
+  <div class="gate-card">
+    <div class="logo" style="margin:0 auto 16px">EA</div>
+    <h2>Electrical Load Calculation</h2>
+    <p>Designed by <b>Engr. Avash</b> · Enter password to continue</p>
+    <input id="gatePass" type="password" placeholder="Password" autocomplete="off">
+    <button class="btn gradient" onclick="tryLogin()" style="width:100%;justify-content:center">Enter</button>
+    <div id="gateError" class="gate-error"></div>
+  </div>
+</div>
+<div class="shell" id="appShell" style="display:none">
+
   <header class="topbar">
     <div class="brand"><div class="logo">EA</div><div><h1 data-i18n="appTitle">Electrical Load Calculation</h1><small>Designed by <b>Engr. Avash</b> · Excel Logic Edition</small></div></div>
     <div class="nav">
@@ -143,6 +162,11 @@ main{padding:34px 42px 55px}.panel{background:#fff;border:1px solid var(--line);
   <div class="footer">Electrical Load Calculation Studio · <b>Designed by Engr. Avash</b> · Excel Logic Edition</div>
 </div>
 <script>
+const GATE_PASS='avash1972';
+function tryLogin(){const v=$('gatePass').value;if(v===GATE_PASS){try{localStorage.setItem('engrAvashAuth','ok')}catch(e){}unlockApp()}else{$('gateError').textContent='Wrong password. Try again.';$('gatePass').value='';$('gatePass').focus()}}
+function unlockApp(){document.getElementById('loginGate').style.display='none';document.getElementById('appShell').style.display=''}
+document.getElementById('gatePass').addEventListener('keydown',e=>{if(e.key==='Enter')tryLogin()});
+(function initGate(){let ok=false;try{ok=localStorage.getItem('engrAvashAuth')==='ok'}catch(e){}if(ok){unlockApp()}else{document.getElementById('gatePass').focus()}})();
 const floors=['GROUND','1ST','2ND','3RD','4TH','5TH','6TH','7TH','8TH','9TH','10TH'];
 const units=['COMMON','SDB1','SDB2','SDB3','SDB4','SDB5','SDB6'];
 const equipment={
