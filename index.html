@@ -3,252 +3,406 @@
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Electrical Load Calculation — Designed by Engr. Avash</title>
+<title>Electrical Building & SDB Designer v3 — Engr. Avash</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600;700&family=Noto+Sans+Bengali:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
-  --ink:#161a1f;--muted:#6b6459;--paper:#f6f3ee;--card:#ffffff;--line:#e6e0d7;
-  --copper:#b5651d;--copper-deep:#8f4e15;--copper-light:#e0954a;
-  --graphite:#1b1f24;--graphite2:#11151a;
-  --green:#1f8a5f;--red:#c0392b;
-  --shadow:0 24px 64px rgba(20,16,10,.16);--shadow2:0 10px 28px rgba(20,16,10,.07);
+  --ink:#161a1f;--muted:#6b6459;--paper:#f6f3ee;--card:#fff;--line:#e6e0d7;
+  --copper:#b5651d;--copper-deep:#8f4e15;--copper-light:#e0954a;--graphite:#1b1f24;--graphite2:#11151a;
+  --green:#1f8a5f;--red:#c0392b;--blue:#2d6cdf;--shadow:0 24px 64px rgba(20,16,10,.16);--shadow2:0 10px 28px rgba(20,16,10,.07)
 }
-*{box-sizing:border-box}
-body{margin:0;font-family:'Manrope','Noto Sans Bengali',ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;color:var(--ink);background:var(--paper);min-height:100vh;padding:28px}
-.metric strong,.kpi strong,.mini strong,.sheet .calc,.sheet input,.formula,.pill{font-family:'IBM Plex Mono','Noto Sans Bengali',ui-monospace,SFMono-Regular,Menlo,monospace}
-.shell{max-width:1600px;margin:auto;background:var(--card);border-radius:24px;overflow:hidden;box-shadow:var(--shadow);min-height:calc(100vh - 56px);border:1px solid var(--line)}
-.topbar{height:84px;display:flex;align-items:center;justify-content:space-between;padding:0 34px;border-bottom:1px solid var(--line);background:rgba(255,255,255,.92);backdrop-filter:blur(14px);position:sticky;top:0;z-index:20}
-.brand{display:flex;align-items:center;gap:13px}.logo{width:44px;height:44px;border-radius:10px;background:var(--graphite);color:var(--copper-light);display:grid;place-items:center;font-weight:700;font-size:16px;font-family:'IBM Plex Mono',monospace;letter-spacing:.01em}.brand h1{font-size:18px;margin:0;letter-spacing:-.01em;font-weight:700}.brand small{display:block;color:var(--muted);margin-top:3px;font-size:12.5px}
-.nav{display:flex;gap:8px;flex-wrap:wrap}.nav button,.btn{border:1px solid var(--line);background:#fff;color:var(--ink);border-radius:11px;padding:11px 16px;font-weight:600;font-size:14px;font-family:inherit;cursor:pointer;transition:.16s}.nav button:hover,.btn:hover{border-color:#cfc4b4;background:#faf7f2}.btn.black{background:var(--graphite);color:#fff;border-color:var(--graphite)}.btn.black:hover{background:var(--graphite2)}.btn.gradient{color:#fff;border:0;background:var(--copper)}.btn.gradient:hover{background:var(--copper-deep)}
-.hero{padding:46px 54px 40px;display:grid;grid-template-columns:1.15fr .85fr;gap:26px;background:linear-gradient(160deg,var(--graphite2),var(--graphite));color:#fff}
-.eyebrow{font-size:13px;color:var(--copper-light);font-weight:600}.hero h2{font-size:clamp(36px,4.4vw,58px);line-height:1.05;margin:12px 0 18px;letter-spacing:-.02em;font-weight:700;color:#fff}.gradient-text{color:var(--copper-light)}.hero p{font-size:15.5px;line-height:1.65;color:#c6c8cb;max-width:760px}.hero-actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:25px}.credit{margin-top:18px;font-size:12px;color:#8a8e93}.credit b{color:#e7e2da}
-.hero .nav button,.hero .btn{border-color:rgba(255,255,255,.18);background:rgba(255,255,255,.07);color:#fff}.hero .btn:hover{background:rgba(255,255,255,.13)}.hero .btn.black{background:#fff;color:var(--graphite);border-color:#fff}.hero .btn.black:hover{background:#e9e6e1}.hero .btn.gradient{background:var(--copper);border-color:var(--copper)}
-.hero-cards{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-content:center}.metric{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);border-radius:16px;padding:20px}.metric span{font-size:12px;color:#9a9ea3;font-weight:600}.metric strong{font-size:27px;display:block;margin-top:9px;letter-spacing:-.01em;color:#fff}.metric.wide{grid-column:1/-1;background:rgba(181,101,29,.16);border-color:rgba(181,101,29,.38)}.metric.wide span{color:var(--copper-light)}.flow{font-size:12.5px;color:#9a9ea3;margin-top:8px}
-.tabs{display:flex;justify-content:center;gap:8px;padding:14px;border-bottom:1px solid var(--line);background:#fff;position:sticky;top:84px;z-index:15}.tabs button{border:0;background:none;font-weight:600;font-size:14px;font-family:inherit;color:var(--muted);cursor:pointer;padding:9px 14px;border-radius:9px}.tabs button:hover{color:var(--ink);background:#f5f1ea}.tabs button.active{color:var(--copper-deep);background:#faece0}
-main{padding:34px 42px 55px}.panel{background:#fff;border:1px solid var(--line);border-radius:18px;padding:24px;margin:0 auto 26px;box-shadow:var(--shadow2)}.panel h3{font-size:22px;letter-spacing:-.01em;margin:0;font-weight:700}.sub{color:var(--muted);font-size:13.5px;line-height:1.6;margin:6px 0 20px}.toolbar{display:flex;justify-content:space-between;align-items:center;gap:15px;flex-wrap:wrap;margin-bottom:15px}.toolbar-right{display:flex;gap:9px;flex-wrap:wrap}.grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px}.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.field{display:flex;flex-direction:column;gap:7px}.field label{font-size:12.5px;color:var(--muted);font-weight:600}.field input,.field select{height:44px;border:1px solid var(--line);border-radius:10px;background:#fff;padding:0 12px;font:inherit;font-weight:500;color:var(--ink);outline:none}.field input:focus,.field select:focus{border-color:var(--copper);box-shadow:0 0 0 3px rgba(181,101,29,.14)}
-.table-wrap{overflow:auto;border:1px solid var(--line);border-radius:14px;background:#fff}.sheet{width:100%;border-collapse:separate;border-spacing:0;min-width:1080px}.sheet th{position:sticky;top:0;background:#f6f2ec;color:#544e45;font-size:11.5px;text-transform:uppercase;letter-spacing:.04em;font-weight:700;padding:11px 8px;border-bottom:1px solid var(--line);z-index:4}.sheet td{padding:6px;border-bottom:1px solid #f1ede6;border-right:1px solid #f3efe9;text-align:center}.sheet td:last-child{border-right:0}.sheet select,.sheet input{width:100%;min-width:90px;border:1px solid transparent;border-radius:8px;padding:8px 8px;background:#fff;font:inherit;color:var(--ink)}.sheet select{font-family:'Manrope','Noto Sans Bengali',sans-serif}.sheet input[type=number]{text-align:right}.sheet select:focus,.sheet input:focus{outline:none;border-color:var(--copper);background:#fffaf3;box-shadow:0 0 0 3px rgba(181,101,29,.12)}.sheet .calc{background:#faf7f2;font-weight:700}.delete{width:32px;height:32px;border-radius:8px;border:0;background:#fdece6;color:var(--red);font-weight:700;cursor:pointer;font-size:15px}.delete:hover{background:#fadcd2}
-.kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-top:18px}.kpi{background:#faf7f2;border:1px solid var(--line);border-radius:14px;padding:15px}.kpi span{font-size:12px;color:var(--muted);display:block;margin-bottom:7px;font-weight:600;font-family:'Manrope','Noto Sans Bengali',sans-serif}.kpi strong{font-size:22px;letter-spacing:-.01em}.kpi.emph{background:var(--graphite);color:#fff;border-color:var(--graphite)}.kpi.emph span{color:#9a9ea3}.kpi.good{background:#e9f7f0;border-color:#c4e7d4;color:#0f6b47}
-.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:15px}.calc-card{border:1px solid var(--line);border-radius:16px;padding:19px;background:#fff}.calc-card h4{margin:0 0 13px;font-size:16px;font-weight:700}.mini-grid{display:grid;grid-template-columns:1fr 1fr;gap:9px}.mini{background:#faf7f2;border-radius:11px;padding:11px}.mini span{font-size:10.5px;color:var(--muted);font-weight:700;letter-spacing:.02em;font-family:'Manrope','Noto Sans Bengali',sans-serif}.mini strong{display:block;margin-top:5px;font-size:17px}.note{font-size:12px;color:#7a7367;line-height:1.5;margin-top:12px;font-family:'Manrope','Noto Sans Bengali',sans-serif}.formula{margin-top:12px;padding:12px 14px;border-radius:11px;background:var(--graphite2);color:#c9ccd0;font-size:11.5px;line-height:1.6}
-.ref-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}.pillbox{display:flex;gap:7px;flex-wrap:wrap}.pill{padding:7px 10px;border-radius:8px;background:#f6f2ec;border:1px solid var(--line);font-size:12px;font-weight:600}
-.section{display:none}.section.active{display:block}.footer{text-align:center;padding:26px 20px 34px;color:var(--muted);font-size:12px}.footer b{color:var(--ink)}.lang-badge{font-weight:700}
-.gate{position:fixed;inset:0;z-index:100;display:flex;align-items:center;justify-content:center;background:linear-gradient(160deg,var(--graphite2),var(--graphite));padding:20px}
-.gate-card{width:100%;max-width:360px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.14);border-radius:18px;padding:32px 28px;text-align:center}
-.gate-card h2{color:#fff;font-size:20px;margin:0 0 6px;font-weight:700}
-.gate-card p{color:#9a9ea3;font-size:13px;margin:0 0 22px}
-.gate-card input{width:100%;height:46px;border-radius:10px;border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.06);color:#fff;padding:0 14px;font:inherit;margin-bottom:12px;outline:none;text-align:center;letter-spacing:.05em}
-.gate-card input:focus{border-color:var(--copper-light)}
-.gate-card .btn{display:flex;align-items:center}
-.gate-error{color:#e77;font-size:12.5px;min-height:18px;margin-top:12px}
-@media(max-width:1050px){body{padding:0}.shell{border-radius:0;min-height:100vh}.hero{grid-template-columns:1fr}.hero-cards{grid-template-columns:repeat(3,1fr)}.metric.wide{grid-column:auto}.cards,.grid3,.grid4{grid-template-columns:1fr 1fr}.kpis{grid-template-columns:1fr 1fr}.topbar{padding:0 18px}.hero{padding:34px 24px}main{padding:26px 18px}.tabs{overflow:auto;justify-content:flex-start}}
-@media(max-width:680px){.nav .hide-mobile{display:none}.hero-cards,.cards,.grid2,.grid3,.grid4,.ref-grid{grid-template-columns:1fr}.kpis{grid-template-columns:1fr}.hero h2{font-size:38px}.panel{padding:18px}.brand h1{font-size:15px}.tabs{top:84px;gap:6px}.topbar{height:84px}}
-@media print{body{background:white;padding:0}.shell{box-shadow:none;border-radius:0}.topbar,.tabs,.hero-actions,.toolbar-right,.delete{display:none!important}.hero{padding:20px;background:white}.hero-cards{display:none}main{padding:10px}.panel{box-shadow:none;break-inside:avoid}.section{display:block!important}}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{margin:0;font-family:'Manrope','Noto Sans Bengali',system-ui,sans-serif;color:var(--ink);background:var(--paper);min-height:100vh;padding:24px}
+button,input,select{font:inherit}.mono,.metric strong,.kpi strong,.mini strong,.sheet .calc,.formula,.pill{font-family:'IBM Plex Mono','Noto Sans Bengali',monospace}
+.shell{max-width:1680px;margin:auto;background:#fff;border:1px solid var(--line);border-radius:24px;overflow:hidden;box-shadow:var(--shadow);min-height:calc(100vh - 48px)}
+.topbar{height:82px;display:flex;align-items:center;justify-content:space-between;padding:0 28px;border-bottom:1px solid var(--line);background:rgba(255,255,255,.94);backdrop-filter:blur(12px);position:sticky;top:0;z-index:30}
+.brand{display:flex;align-items:center;gap:12px}.logo{width:44px;height:44px;border-radius:10px;background:var(--graphite);color:var(--copper-light);display:grid;place-items:center;font-weight:800;font-family:'IBM Plex Mono',monospace}.brand h1{font-size:17px;margin:0}.brand small{display:block;color:var(--muted);font-size:12px;margin-top:2px}
+.nav{display:flex;gap:8px;flex-wrap:wrap}.btn,.nav button{border:1px solid var(--line);background:#fff;color:var(--ink);border-radius:10px;padding:10px 14px;font-weight:700;font-size:13px;cursor:pointer;transition:.15s}.btn:hover,.nav button:hover{background:#faf7f2;border-color:#cfc4b4}.btn.black{background:var(--graphite);color:#fff;border-color:var(--graphite)}.btn.copper{background:var(--copper);color:#fff;border-color:var(--copper)}.btn.red{color:var(--red);background:#fff8f6}.btn.small{padding:7px 10px;font-size:12px}
+.hero{padding:34px 42px;background:linear-gradient(155deg,var(--graphite2),var(--graphite));color:#fff;display:grid;grid-template-columns:1.15fr .85fr;gap:24px}.hero h2{font-size:clamp(32px,4vw,52px);line-height:1.05;margin:8px 0 12px}.hero p{color:#c8cbd0;line-height:1.65;max-width:820px;font-size:14px}.eyebrow{color:var(--copper-light);font-weight:700;font-size:12px}.hero-cards{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;align-content:center}.metric{border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.05);border-radius:14px;padding:16px}.metric span{color:#9ea2a7;font-size:11px;font-weight:700}.metric strong{display:block;font-size:24px;margin-top:7px}.metric.wide{grid-column:1/-1;background:rgba(181,101,29,.16);border-color:rgba(181,101,29,.4)}.metric.wide span{color:var(--copper-light)}
+.tabs{display:flex;gap:7px;padding:12px 16px;border-bottom:1px solid var(--line);background:#fff;position:sticky;top:82px;z-index:20;overflow:auto}.tabs button{white-space:nowrap;border:0;background:none;color:var(--muted);font-weight:700;padding:9px 12px;border-radius:9px;cursor:pointer}.tabs button.active{background:#faece0;color:var(--copper-deep)}
+main{padding:28px 34px 52px}.section{display:none}.section.active{display:block}.panel{background:#fff;border:1px solid var(--line);border-radius:17px;padding:22px;margin-bottom:22px;box-shadow:var(--shadow2)}.panel h3{font-size:21px;margin:0}.panel h4{margin:0 0 10px}.sub{color:var(--muted);font-size:13px;line-height:1.6;margin:5px 0 18px}.toolbar{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:14px}.toolbar-right{display:flex;gap:8px;align-items:end;flex-wrap:wrap}
+.grid2{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.field{display:flex;flex-direction:column;gap:6px}.field label{font-size:11.5px;color:var(--muted);font-weight:800}.field input,.field select{height:42px;border:1px solid var(--line);border-radius:9px;padding:0 11px;background:#fff;color:var(--ink);outline:none}.field input:focus,.field select:focus{border-color:var(--copper);box-shadow:0 0 0 3px rgba(181,101,29,.12)}
+.table-wrap{overflow:auto;border:1px solid var(--line);border-radius:12px}.sheet{width:100%;border-collapse:separate;border-spacing:0;min-width:980px}.sheet th{position:sticky;top:0;background:#f6f2ec;color:#544e45;text-transform:uppercase;letter-spacing:.04em;font-size:10.5px;padding:10px 7px;border-bottom:1px solid var(--line);z-index:2}.sheet td{padding:6px;border-bottom:1px solid #f1ede6;border-right:1px solid #f4f0e9;text-align:center;font-size:12.5px}.sheet td:last-child{border-right:0}.sheet select,.sheet input{width:100%;min-width:85px;border:1px solid transparent;border-radius:7px;padding:7px;background:#fff;color:var(--ink)}.sheet input[type=number]{text-align:right}.sheet select:focus,.sheet input:focus{outline:none;border-color:var(--copper);background:#fffaf3}.sheet .calc{font-weight:700;background:#faf7f2}.delete{width:30px;height:30px;border:0;border-radius:7px;background:#fdece6;color:var(--red);font-weight:800;cursor:pointer}
+.kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-top:16px}.kpi{background:#faf7f2;border:1px solid var(--line);border-radius:12px;padding:13px}.kpi span{font-size:11px;color:var(--muted);font-weight:700;display:block;margin-bottom:6px}.kpi strong{font-size:20px}.kpi.emph{background:var(--graphite);border-color:var(--graphite);color:#fff}.kpi.good{background:#e9f7f0;color:#0f6b47;border-color:#c4e7d4}
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:13px}.calc-card,.template-card,.floor-card{border:1px solid var(--line);border-radius:14px;padding:16px;background:#fff}.template-card{box-shadow:0 8px 20px rgba(20,16,10,.04)}.template-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:12px}.template-name{font-size:16px;font-weight:800;border:0;border-bottom:1px dashed #cfc7bc;outline:0;padding:4px 2px;min-width:150px}.mini-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}.mini{background:#faf7f2;border-radius:9px;padding:10px}.mini span{font-size:10px;color:var(--muted);font-weight:800}.mini strong{font-size:15px;display:block;margin-top:4px}.note{font-size:11.5px;color:#7a7367;line-height:1.55;margin-top:10px}.formula{margin-top:10px;padding:10px 12px;border-radius:9px;background:var(--graphite2);color:#c9ccd0;font-size:10.5px;line-height:1.55}
+.pillbox{display:flex;gap:7px;flex-wrap:wrap}.pill{padding:6px 9px;border-radius:7px;background:#f6f2ec;border:1px solid var(--line);font-size:11px;font-weight:700}.pill.floor{background:#fff8f1;border-color:#ead4be}.status{padding:10px 12px;border-radius:10px;background:#eef6ff;border:1px solid #d7e8ff;color:#244d82;font-size:12px;line-height:1.5}.warning{background:#fff8e8;border-color:#f0dfb1;color:#6d5318}.success{background:#e9f7f0;border-color:#c4e7d4;color:#0f6b47}
+.diagram-tools{display:flex;gap:8px;align-items:end;flex-wrap:wrap;margin-bottom:12px}.diagram-frame{border:1px solid var(--line);border-radius:14px;overflow:auto;background:#f4f0e7;padding:12px}.diagram-frame svg{display:block;min-width:850px;background:#efecdf;border-radius:8px}.diagram-title{display:flex;justify-content:space-between;align-items:center;gap:12px;margin:18px 0 8px}.diagram-title h4{margin:0}.legend{display:flex;gap:12px;flex-wrap:wrap;font-size:11px;color:var(--muted)}.dot{width:8px;height:8px;border-radius:50%;display:inline-block;margin-right:4px}.dot.red{background:#f00}.dot.black{background:#000}.dot.green{background:#138a52}
+.wizard-row{display:grid;grid-template-columns:1fr 1.3fr .7fr auto;gap:9px;align-items:end;margin-top:12px}.empty{padding:24px;text-align:center;color:#817771;font-size:13px}.muted{color:var(--muted)}.right{text-align:right}.footer{text-align:center;color:var(--muted);font-size:11px;padding:24px 15px 30px}
+.gate{position:fixed;inset:0;z-index:100;display:flex;align-items:center;justify-content:center;background:linear-gradient(160deg,var(--graphite2),var(--graphite));padding:20px}.gate-card{width:100%;max-width:360px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.14);border-radius:18px;padding:30px 26px;text-align:center}.gate-card h2{color:#fff;font-size:20px;margin:0 0 6px}.gate-card p{color:#9a9ea3;font-size:12px}.gate-card input{width:100%;height:44px;border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.06);color:#fff;border-radius:9px;padding:0 12px;text-align:center;outline:none;margin:12px 0}.gate-error{color:#f08b8b;font-size:12px;min-height:18px;margin-top:8px}
+@media(max-width:1100px){body{padding:0}.shell{border-radius:0;min-height:100vh}.hero{grid-template-columns:1fr}.cards,.grid4{grid-template-columns:1fr 1fr}.topbar{padding:0 16px}main{padding:22px 16px}.wizard-row{grid-template-columns:1fr 1fr}.kpis{grid-template-columns:1fr 1fr}.hero{padding:28px 22px}}
+@media(max-width:700px){.brand small,.hide-mobile{display:none}.hero-cards,.cards,.grid2,.grid3,.grid4,.wizard-row{grid-template-columns:1fr}.kpis{grid-template-columns:1fr}.topbar{height:76px}.tabs{top:76px}.hero h2{font-size:34px}.panel{padding:16px}.nav{gap:4px}.nav button{padding:8px 9px}.brand h1{font-size:14px}}
+@media print{body{background:white;padding:0}.shell{box-shadow:none;border:0}.topbar,.tabs,.hero,.no-print,.diagram-tools,.delete{display:none!important}main{padding:0}.section{display:block!important}.panel{box-shadow:none;border:0;break-inside:avoid}.diagram-frame{border:0;padding:0}.diagram-frame svg{min-width:0;width:100%;height:auto}}
 </style>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 </head>
 <body>
 <div id="loginGate" class="gate">
   <div class="gate-card">
-    <div class="logo" style="margin:0 auto 16px">EA</div>
-    <h2>Electrical Load Calculation</h2>
+    <div class="logo" style="margin:0 auto 14px">EA</div>
+    <h2>Electrical Building Designer</h2>
     <p>Designed by <b>Engr. Avash</b> · Enter password to continue</p>
     <input id="gatePass" type="password" placeholder="Password" autocomplete="off">
-    <button class="btn gradient" onclick="tryLogin()" style="width:100%;justify-content:center">Enter</button>
+    <button class="btn copper" onclick="tryLogin()" style="width:100%">Enter</button>
     <div id="gateError" class="gate-error"></div>
   </div>
 </div>
+
 <div class="shell" id="appShell" style="display:none">
+<header class="topbar">
+  <div class="brand"><div class="logo">EA</div><div><h1>Electrical Building & SDB Designer</h1><small>Designed by Engr. Avash · Civil-engineer friendly</small></div></div>
+  <div class="nav">
+    <button class="hide-mobile" onclick="saveProjectFile()">Save Project</button>
+    <button class="hide-mobile" onclick="document.getElementById('projectFile').click()">Open Project</button>
+    <input id="projectFile" type="file" accept="application/json" hidden onchange="openProjectFile(event)">
+    <button class="hide-mobile" onclick="window.print()">Print</button>
+    <button class="btn black" onclick="showSection('setup')">Project Setup</button>
+  </div>
+</header>
 
-  <header class="topbar">
-    <div class="brand"><div class="logo">EA</div><div><h1 data-i18n="appTitle">Electrical Load Calculation</h1><small>Designed by <b>Engr. Avash</b> · Excel Logic Edition</small></div></div>
-    <div class="nav">
-      <button id="langBtn" class="lang-badge">বাংলা</button>
-      <button class="hide-mobile" onclick="saveProject()" data-i18n="saveProject">Save project</button>
-      <button class="hide-mobile" onclick="window.print()" data-i18n="print">Print</button>
-      <button class="btn black" onclick="showSection('load')" data-i18n="startCalculation">Start calculation</button>
+<section class="hero">
+  <div>
+    <div class="eyebrow">BUILDING → FLOOR → UNIT TYPE → SDB → FIXTURE → CIRCUIT → SLD</div>
+    <h2>Give fixture counts.<br><span style="color:var(--copper-light)">Get the SDB design.</span></h2>
+    <p>একবার Unit Type বানান, তারপর যেসব floor-এ সেই unit আছে সেখানে reuse করুন। Common/Parking/Stair আলাদা SDB হিসেবে দিন। Website connected load, demand load, current, breaker, cable, busbar এবং preliminary single-line diagram automatic তৈরি করবে।</p>
+  </div>
+  <div class="hero-cards">
+    <div class="metric"><span>PROJECT SDB</span><strong id="heroSdb">0</strong></div>
+    <div class="metric"><span>CONNECTED LOAD</span><strong id="heroConnected">0.00 kW</strong></div>
+    <div class="metric"><span>DEMAND LOAD</span><strong id="heroDemand">0.00 kW</strong></div>
+    <div class="metric"><span>EMERGENCY LOAD</span><strong id="heroEmergency">0.00 kW</strong></div>
+    <div class="metric wide"><span>AUTOMATIC OUTPUT</span><strong style="font-size:16px">SDB SLD + MAIN SLD + LOAD SCHEDULE</strong></div>
+  </div>
+</section>
+
+<nav class="tabs">
+  <button class="active" data-section="setup" onclick="showSection('setup')">1. Building Setup</button>
+  <button data-section="excelimport" onclick="showSection('excelimport')">2. Excel Import</button>
+  <button data-section="templates" onclick="showSection('templates')">3. Unit / Fixture Templates</button>
+  <button data-section="plan" onclick="showSection('plan')">4. Floor & SDB Plan</button>
+  <button data-section="load" onclick="showSection('load')">5. Load Schedule</button>
+  <button data-section="summary" onclick="showSection('summary')">6. SDB Summary</button>
+  <button data-section="diagrams" onclick="showSection('diagrams')">7. Auto Diagrams</button>
+  <button data-section="main" onclick="showSection('main')">8. Transformer / Generator</button>
+  <button data-section="solar" onclick="showSection('solar')">9. Solar</button>
+  <button data-section="rules" onclick="showSection('rules')">Rules</button>
+</nav>
+
+<main>
+<section id="setup" class="section active">
+  <div class="panel">
+    <div class="toolbar"><div><h3>Building Setup</h3><div class="sub">প্রথমে building-এর floor structure দিন। পরে একই Unit Type যত floor-এ দরকার reuse করতে পারবেন।</div></div><button class="btn copper" onclick="generateFloors()">Generate Floors</button></div>
+    <div class="grid4">
+      <div class="field"><label>Project Name</label><input id="projectName" value="New Building" oninput="syncSettings()"></div>
+      <div class="field"><label>Upper Floor Count</label><input id="upperFloorCount" type="number" min="0" max="50" value="4"></div>
+      <div class="field"><label>Ground Floor</label><select id="hasGround"><option value="yes">Yes</option><option value="no">No</option></select></div>
+      <div class="field"><label>Default Demand Factor</label><input id="globalDF" type="number" min="0" max="1" step="0.01" value="0.70" oninput="syncSettings()"></div>
     </div>
-  </header>
+    <div style="margin-top:16px"><b style="font-size:12px">Generated floors</b><div id="floorPills" class="pillbox" style="margin-top:8px"></div></div>
+    <div class="status warning" style="margin-top:16px"><b>Important:</b> Auto sizing is a preliminary design helper. Final cable/protection selection should be checked by the electrical engineer for installation method, voltage drop, fault level, phase balancing, selectivity and applicable code.</div>
+  </div>
 
-  <section class="hero">
-    <div>
-      <div class="eyebrow">Excel-matched workflow · Civil engineer friendly</div>
-      <h2><span class="gradient-text">Electrical load</span><br>calculation, made clear.</h2>
-      <p data-i18n="heroText">This version follows your Excel structure: Floor → Unit/SDB → Equipment → Wattage → Normal Load Qty → Connected Load → Emergency Qty → Emergency Load, then automatically builds SDB, transformer, generator, cable and busbar calculations.</p>
-      <div class="hero-actions"><button class="btn gradient" onclick="showSection('load')" data-i18n="enterLoads">Enter loads</button><button class="btn" onclick="loadExcelExample()" data-i18n="loadExample">Load Excel example</button><button class="btn" onclick="clearAll()" data-i18n="clearAll">Clear all</button></div>
-      <div class="credit">Source logic: your uploaded <b>JAHANGER ALOM ELECTRICAL CALCULATION FINAL.xlsx</b> · Branding: <b>Designed by Engr. Avash</b></div>
+  <div class="panel">
+    <h3>Quick Workflow</h3><div class="sub">এই ৪টা step follow করলেই diagram পাবেন।</div>
+    <div class="cards">
+      <div class="calc-card"><h4>1 · Unit Type</h4><div class="note">যেমন UNIT A, UNIT B, COMMON। একবার fixture count দিন।</div><button class="btn small" onclick="showSection('templates')">Open Templates</button></div>
+      <div class="calc-card"><h4>2 · SDB Placement</h4><div class="note">কোন floor-এ কোন Unit Type এবং SDB নাম কী হবে সেটি map করুন।</div><button class="btn small" onclick="showSection('plan')">Open SDB Plan</button></div>
+      <div class="calc-card"><h4>3 · Build Loads</h4><div class="note">Plan থেকে load schedule automatic তৈরি করুন। চাইলে manual edit করুন।</div><button class="btn small" onclick="buildLoadSchedule(true)">Build Now</button></div>
+      <div class="calc-card"><h4>4 · Auto SLD</h4><div class="note">প্রতিটি SDB-এর single-line diagram এবং একটি main SLD দেখুন।</div><button class="btn small" onclick="showSection('diagrams')">Open Diagrams</button></div>
     </div>
-    <div class="hero-cards">
-      <div class="metric"><span data-i18n="connectedLoad">Connected load</span><strong id="heroConnected">0.00 kW</strong><div class="flow">Σ Watt × N.L Qty</div></div>
-      <div class="metric"><span data-i18n="emergencyLoad">Emergency load</span><strong id="heroEmergency">0.00 kW</strong><div class="flow">Σ Watt × E.L Qty</div></div>
-      <div class="metric wide"><span data-i18n="designFlow">Design flow</span><strong>LOAD → DEMAND → CURRENT → PROTECTION</strong><div class="flow" data-i18n="flowText">Exact floor/unit grouping from the Excel “Check” sheet logic.</div></div>
+  </div>
+</section>
+
+<section id="excelimport" class="section">
+  <div class="panel">
+    <div class="toolbar">
+      <div><h3>Excel → Full Building Auto Calculation</h3><div class="sub">আপনার <b>All SDB Fixture Count</b> format-এর Excel upload করুন। Website SDB range নিজে expand করবে — যেমন <b>2NDTO4TH-1 = 2ND + 3RD + 4TH floor-এর SDB1</b> — তারপর load, emergency/IPS, demand, circuit এবং SLD auto তৈরি করবে।</div></div>
+      <div class="toolbar-right"><label class="btn copper" style="display:inline-flex;align-items:center;gap:7px">Upload Excel<input id="excelUpload" type="file" accept=".xlsx,.xls" style="display:none" onchange="importExcelFile(event)"></label><button class="btn" onclick="clearExcelImport()">Clear Imported Data</button></div>
     </div>
-  </section>
+    <div id="excelStatus" class="status">No Excel imported yet. Expected columns: <b>SDB / DB Name · Fixture Name · Qty</b>.</div>
+    <div class="kpis" style="margin-top:14px"><div class="kpi"><span>Source SDB Groups</span><strong id="impSourceSdb">0</strong></div><div class="kpi"><span>Physical SDBs After Expand</span><strong id="impPhysicalSdb">0</strong></div><div class="kpi"><span>Source Fixture Count</span><strong id="impSourceFixture">0</strong></div><div class="kpi"><span>Building Fixture Count</span><strong id="impBuildingFixture">0</strong></div><div class="kpi emph"><span>Imported Rows</span><strong id="impRows">0</strong></div></div>
+    <div class="status warning" style="margin-top:14px"><b>Auto rules:</b> SB = switchboard only (0W, circuit grouping only) · TS = 3-pin socket · SBG = geyser switchboard, so each SBG count creates one geyser load/circuit · default emergency/IPS quantity = all light + fan fixtures. Everything remains editable below and in Load Schedule.</div>
+  </div>
 
-  <nav class="tabs">
-    <button class="active" data-section="load" onclick="showSection('load')" data-i18n="loadEntry">Load entry</button>
-    <button data-section="summary" onclick="showSection('summary')" data-i18n="sdbSummary">SDB summary</button>
-    <button data-section="main" onclick="showSection('main')" data-i18n="mainSizing">Transformer / Generator</button>
-    <button data-section="solar" onclick="showSection('solar')" data-i18n="solar">Solar</button>
-    <button data-section="reference" onclick="showSection('reference')" data-i18n="reference">Excel reference</button>
-  </nav>
+  <div class="panel">
+    <div class="toolbar"><div><h3>Fixture Master — Editable Defaults</h3><div class="sub">Excel code → load wattage/type mapping. আপনার engineer-এর actual fixture wattage পেলে এখানেই change করবেন; imported calculation সাথে সাথে update হবে। Control/switchboard items can stay 0 W.</div></div><button class="btn" onclick="resetFixtureMaster()">Reset Defaults</button></div>
+    <div class="table-wrap"><table class="sheet" style="min-width:980px"><thead><tr><th>Excel Code</th><th>Meaning / Use</th><th>Watt / Point</th><th>Type</th><th>Default IPS/EMG</th><th>Load?</th></tr></thead><tbody id="fixtureMasterBody"></tbody></table></div>
+    <div class="note">Default watts are preliminary design assumptions based mainly on the calculator values already used in this website (e.g. light 30W, fan 80W, exhaust 60W, 3-pin socket 300W, AC 1800W, geyser 1500W). For final design, use the actual fixture/appliance nameplate wattage and electrical engineer-approved diversity/protection rules.</div>
+  </div>
+</section>
 
-  <main>
-    <section id="load" class="section active">
-      <div class="panel">
-        <div class="toolbar"><div><h3 data-i18n="loadSchedule">Load Schedule</h3><div class="sub" data-i18n="loadScheduleSub">Each row has the same Floor, Unit/SDB and Equipment options as your Excel reference. Wattage is looked up automatically but remains editable for custom loads.</div></div><div class="toolbar-right"><button class="btn black" onclick="addRows(1)">+ <span data-i18n="addRow">Add row</span></button><button class="btn" onclick="addRows(10)">+10</button><button class="btn" onclick="exportCSV()">CSV Export</button></div></div>
-        <div class="table-wrap"><table class="sheet" id="loadTable"><thead><tr>
-          <th data-i18n="floor">Floor</th><th data-i18n="unit">Unit</th><th data-i18n="equipment">Equipment name</th><th data-i18n="wattage">Wattage</th><th>N.L Qty</th><th data-i18n="totalConnected">Total connected load</th><th>E.L Qty</th><th data-i18n="totalEmg">Total EMG</th><th></th>
-        </tr></thead><tbody id="loadBody"></tbody></table></div>
-        <div class="kpis">
-          <div class="kpi"><span data-i18n="connectedLoad">Connected load</span><strong id="totalConnected">0.00 kW</strong></div>
-          <div class="kpi"><span data-i18n="emergencyLoad">Emergency load</span><strong id="totalEmergency">0.00 kW</strong></div>
-          <div class="kpi"><span data-i18n="demandFactor">Demand factor</span><strong id="dfKpi">0.50</strong></div>
-          <div class="kpi"><span data-i18n="demandLoad">Demand load</span><strong id="demandKpi">0.00 kW</strong></div>
-          <div class="kpi emph"><span data-i18n="margin20">20% margin load</span><strong id="marginKpi">0 kW</strong></div>
-        </div>
-      </div>
-    </section>
+<section id="templates" class="section">
+  <div class="panel">
+    <div class="toolbar"><div><h3>Unit / SDB Fixture Templates</h3><div class="sub">একই ধরনের unit বারবার থাকলে এখানে একবার fixture count দিন। Quantity = normal load count, EMG Qty = emergency/IPS count.</div></div><div class="toolbar-right"><button class="btn black" onclick="addTemplate()">+ New Template</button><button class="btn" onclick="addDefaultTemplate('COMMON')">+ Common Template</button></div></div>
+    <div id="templateList" class="grid2"></div>
+  </div>
+</section>
 
-    <section id="summary" class="section">
-      <div class="panel">
-        <div class="toolbar"><div><h3 data-i18n="sdbSummary">Floor / Unit SDB Summary</h3><div class="sub" data-i18n="summarySub">Automatically groups all load rows by Floor + Unit. Every floor and every SDB/Common option is supported.</div></div><div class="toolbar-right"><div class="field" style="min-width:160px"><label data-i18n="defaultDF">Default D. Factor</label><input id="globalDF2" type="number" min="0" max="1" step="0.01" value="0.5"></div></div></div>
-        <div class="table-wrap"><table class="sheet" id="summaryTable"><thead><tr><th>Floor</th><th>SDB</th><th>Total</th><th>ESDB</th><th>EMG Total</th><th>D. Factor</th><th>M Demand</th><th>Current</th><th>Breaker</th><th>Cable</th><th>Busbar Size</th><th>B. Cu</th></tr></thead><tbody id="summaryBody"></tbody></table></div>
-        <div class="formula">Excel match: M Demand = ROUNDDOWN(Total kW × D.F × 1.20, 0) · Current = ≤7 kW: P/(230×0.8), otherwise P/(√3×400×0.8) · Breaker/Cable = next suitable reference size.</div>
-      </div>
-    </section>
+<section id="plan" class="section">
+  <div class="panel">
+    <div class="toolbar"><div><h3>Floor & SDB Plan</h3><div class="sub">প্রতিটি physical SDB এক row। Unit একই হলেও আলাদা SDB হলে আলাদা row দিন। Parking/Stair/Common-এর জন্য Category = COMMON.</div></div><button class="btn black" onclick="addPlacement()">+ Add SDB</button></div>
+    <div class="table-wrap"><table class="sheet" style="min-width:1050px"><thead><tr><th>Floor</th><th>SDB Name</th><th>Category</th><th>Unit / Area Label</th><th>Fixture Template</th><th>D.F</th><th></th></tr></thead><tbody id="placementBody"></tbody></table></div>
 
-    <section id="main" class="section">
-      <div class="panel">
-        <div class="toolbar"><div><h3 data-i18n="mainSizing">Main Sizing</h3><div class="sub" data-i18n="mainSub">Transformer, generator, breaker, cable and copper busbar using the same reference arrays and selection logic from the Excel Check sheet.</div></div><div class="toolbar-right"><div class="field" style="min-width:160px"><label data-i18n="globalDF">Global Demand Factor</label><input id="globalDF" type="number" min="0" max="1" step="0.01" value="0.5"></div></div></div>
-        <div class="cards">
-          <div class="calc-card"><h4>Demand</h4><div class="mini-grid"><div class="mini"><span>Connected</span><strong id="mainConnected">0 kW</strong></div><div class="mini"><span>Demand</span><strong id="mainDemand">0 kW</strong></div><div class="mini"><span>Margin 20%</span><strong id="mainMargin">0 kW</strong></div><div class="mini"><span>Emergency</span><strong id="mainEmergency">0 kW</strong></div></div><div class="note">Excel: Demand = Total × D.F; Margin = ROUNDDOWN(Demand × 1.2, 0).</div></div>
-          <div class="calc-card"><h4>Transformer</h4><div class="mini-grid"><div class="mini"><span>Transformer Size</span><strong id="trSize">—</strong></div><div class="mini"><span>TR Breaker</span><strong id="trBreaker">—</strong></div><div class="mini"><span>Cable Size</span><strong id="trCable">—</strong></div><div class="mini"><span>Busbar (A)</span><strong id="trBusA">—</strong></div><div class="mini" style="grid-column:1/-1"><span>Busbar Size</span><strong id="trBusSize">—</strong></div></div><div class="formula">TX target = Margin / 0.80 · I = kVA×1000/(√3×415) · cable selection uses I/(0.9×0.8×0.95).</div></div>
-          <div class="calc-card"><h4>Generator</h4><div class="mini-grid"><div class="mini"><span>Generator Size</span><strong id="genSize">—</strong></div><div class="mini"><span>GEN Breaker</span><strong id="genBreaker">—</strong></div><div class="mini"><span>GEN Cable</span><strong id="genCable">—</strong></div><div class="mini"><span>Emergency Load</span><strong id="genLoad">—</strong></div></div><div class="formula">GEN target = Emergency kW / 0.80 · ≤10 kVA uses 220 V; otherwise 3Φ 400/415 V selection logic.</div></div>
-        </div>
-      </div>
-    </section>
+    <div class="wizard-row">
+      <div class="field"><label>Quick add floor</label><select id="quickFloor"></select></div>
+      <div class="field"><label>Unit Type / Template</label><select id="quickTemplate"></select></div>
+      <div class="field"><label>How many SDB</label><input id="quickQty" type="number" min="1" max="20" value="2"></div>
+      <button class="btn copper" onclick="quickAddSdbs()">Create SDBs</button>
+    </div>
+    <div class="status" style="margin-top:14px">Example: 2nd floor-এ Unit A দুইটা থাকলে template = UNIT A, Qty = 2 দিন। Website SDB নাম auto করবে; পরে নাম edit করতে পারবেন। Common SDB আলাদা করে যোগ করুন।</div>
+  </div>
+</section>
 
-    <section id="solar" class="section">
-      <div class="panel">
-        <h3>Solar / Backup Inputs</h3><div class="sub">Matches the solar block in the Excel “Check” sheet.</div>
-        <div class="grid4">
-          <div class="field"><label>Power (kW)</label><input id="solarPower" type="number" step="0.01" value="0.90"></div>
-          <div class="field"><label>Backup Time (Hour)</label><input id="backupTime" type="number" step="0.1" value="3"></div>
-          <div class="field"><label>Battery DoD</label><input id="dod" type="number" step="0.01" value="0.8"></div>
-          <div class="field"><label>Efficiency</label><input id="eff" type="number" step="0.01" value="0.9"></div>
-          <div class="field"><label>Time A. Load (Hour)</label><input id="activeHours" type="number" step="0.1" value="4"></div>
-          <div class="field"><label>Panel Size (W)</label><input id="panelW" type="number" step="1" value="550"></div>
-          <div class="field"><label>Battery Volt (V)</label><input id="batV" type="number" step="1" value="24"></div>
-          <div class="field"><label>Battery A (Ah)</label><input id="batA" type="number" step="1" value="100"></div>
-        </div>
-        <div class="kpis" style="grid-template-columns:repeat(5,1fr)">
-          <div class="kpi"><span>Inverter Size</span><strong id="invSize">—</strong></div><div class="kpi"><span>Battery Size</span><strong id="batterySize">—</strong></div><div class="kpi"><span>Daily Need Energy</span><strong id="dailyEnergy">—</strong></div><div class="kpi"><span>Solar PV Size</span><strong id="pvSize">—</strong></div><div class="kpi"><span>Number of Panel</span><strong id="panelQty">—</strong></div>
-          <div class="kpi"><span>Required Area</span><strong id="area">—</strong></div><div class="kpi"><span>Battery Qty</span><strong id="batteryQty">—</strong></div><div class="kpi good"><span>Cost (Excel formula)</span><strong id="solarCost">—</strong></div>
-        </div>
-        <div class="formula">Battery kWh = (Power × Backup Time)/(DoD × Efficiency) · Daily Need = Battery kWh + (Power × Active Hours) · PV = ROUNDDOWN(Daily Need/(4.5×0.75),0) · Panel Qty = ROUNDUP(PV×1000/Panel W,0).</div>
-      </div>
-    </section>
+<section id="load" class="section">
+  <div class="panel">
+    <div class="toolbar"><div><h3>Load Schedule</h3><div class="sub">Floor/SDB plan থেকে generated rows। এখানে watt বা quantity override করা যাবে।</div></div><div class="toolbar-right"><button class="btn copper" onclick="buildLoadSchedule(true)">Rebuild from SDB Plan</button><button class="btn black" onclick="addLoadRow()">+ Manual Row</button><button class="btn" onclick="exportCSV()">CSV Export</button></div></div>
+    <div class="table-wrap"><table class="sheet" id="loadTable" style="min-width:1180px"><thead><tr><th>Floor</th><th>SDB</th><th>Area / Unit</th><th>Equipment</th><th>Watt</th><th>Qty</th><th>Connected W</th><th>EMG Qty</th><th>EMG W</th><th></th></tr></thead><tbody id="loadBody"></tbody></table></div>
+    <div class="kpis"><div class="kpi"><span>Connected Load</span><strong id="totalConnected">0.00 kW</strong></div><div class="kpi"><span>Demand Load</span><strong id="totalDemand">0.00 kW</strong></div><div class="kpi"><span>Emergency Load</span><strong id="totalEmergency">0.00 kW</strong></div><div class="kpi"><span>Total SDB</span><strong id="totalSdb">0</strong></div><div class="kpi emph"><span>20% Margin on Total Demand</span><strong id="marginKpi">0.00 kW</strong></div></div>
+  </div>
+</section>
 
-    <section id="reference" class="section">
-      <div class="panel">
-        <h3 data-i18n="reference">Excel Reference Lists</h3><div class="sub">These are taken from the uploaded workbook’s Reference1 sheet and are used directly by this HTML.</div>
-        <div class="ref-grid">
-          <div><h4>Floor options</h4><div id="floorPills" class="pillbox"></div><h4>Unit options</h4><div id="unitPills" class="pillbox"></div><h4>Equipment & Wattage</h4><div id="equipPills" class="pillbox"></div></div>
-          <div><h4>Selection tables</h4><div class="mini-grid"><div class="mini"><span>Transformer kVA</span><strong style="font-size:13px" id="txRef"></strong></div><div class="mini"><span>Breaker A</span><strong style="font-size:13px" id="breakerRef"></strong></div><div class="mini"><span>Generator kVA</span><strong style="font-size:13px" id="genRef"></strong></div><div class="mini"><span>GEN cable mm²</span><strong style="font-size:13px" id="cableRef"></strong></div></div><div class="note">Important: this tool reproduces the workbook logic for learning and preliminary design. Final cable/protection selection should still be checked for installation method, voltage drop, fault level, coordination and applicable code.</div></div>
-        </div>
-      </div>
-    </section>
-  </main>
-  <div class="footer">Electrical Load Calculation Studio · <b>Designed by Engr. Avash</b> · Excel Logic Edition</div>
+<section id="summary" class="section">
+  <div class="panel">
+    <div class="toolbar"><div><h3>SDB Summary</h3><div class="sub">প্রতিটি SDB-এর connected load, demand, current এবং preliminary incoming protection/cable/busbar suggestion.</div></div><button class="btn" onclick="recalc()">Refresh</button></div>
+    <div class="table-wrap"><table class="sheet" style="min-width:1380px"><thead><tr><th>Floor</th><th>SDB</th><th>Area</th><th>Connected</th><th>EMG</th><th>D.F</th><th>Demand</th><th>Supply</th><th>Current</th><th>Incoming</th><th>Cable</th><th>Busbar</th><th>Circuits</th></tr></thead><tbody id="summaryBody"></tbody></table></div>
+  </div>
+</section>
+
+<section id="diagrams" class="section">
+  <div class="panel">
+    <div class="toolbar"><div><h3>Automatic SDB Single-Line Diagrams</h3><div class="sub">Fixture count থেকে circuit grouping করে diagram draw করা হয়। Circuit rule নিচের Rules tab থেকে change করা যায়।</div></div></div>
+    <div class="diagram-tools no-print"><div class="field" style="min-width:240px"><label>Select SDB</label><select id="diagramSelect" onchange="renderDiagrams()"></select></div><button class="btn black" onclick="downloadSelectedSVG()">Download SVG</button><button class="btn" onclick="downloadSelectedPNG()">Download PNG</button><button class="btn" onclick="window.print()">Print</button></div>
+    <div id="diagramHost"></div>
+  </div>
+  <div class="panel">
+    <div class="diagram-title"><div><h3>Main SLD Overview</h3><div class="sub">Transformer/LT Panel/MDB থেকে project-এর SDB distribution overview.</div></div><button class="btn no-print" onclick="downloadMainSVG()">Download Main SVG</button></div>
+    <div id="mainSldHost" class="diagram-frame"></div>
+  </div>
+</section>
+
+<section id="main" class="section">
+  <div class="panel">
+    <div class="toolbar"><div><h3>Main Sizing</h3><div class="sub">Current project load থেকে preliminary transformer, generator, main breaker/cable sizing.</div></div></div>
+    <div class="cards">
+      <div class="calc-card"><h4>Demand</h4><div class="mini-grid"><div class="mini"><span>Connected</span><strong id="mainConnected">0 kW</strong></div><div class="mini"><span>Demand</span><strong id="mainDemand">0 kW</strong></div><div class="mini"><span>20% Margin</span><strong id="mainMargin">0 kW</strong></div><div class="mini"><span>Emergency</span><strong id="mainEmergency">0 kW</strong></div></div></div>
+      <div class="calc-card"><h4>Transformer</h4><div class="mini-grid"><div class="mini"><span>Size</span><strong id="trSize">—</strong></div><div class="mini"><span>Breaker</span><strong id="trBreaker">—</strong></div><div class="mini"><span>Cable</span><strong id="trCable">—</strong></div><div class="mini"><span>Busbar</span><strong id="trBusSize">—</strong></div></div><div class="formula">Target = total demand × 1.20 / 0.80. Standard size is next available reference value.</div></div>
+      <div class="calc-card"><h4>Generator</h4><div class="mini-grid"><div class="mini"><span>Size</span><strong id="genSize">—</strong></div><div class="mini"><span>Breaker</span><strong id="genBreaker">—</strong></div><div class="mini"><span>Cable</span><strong id="genCable">—</strong></div><div class="mini"><span>EMG Load</span><strong id="genLoad">—</strong></div></div></div>
+    </div>
+  </div>
+</section>
+
+<section id="solar" class="section">
+  <div class="panel"><h3>Solar / Backup Inputs</h3><div class="sub">Kept from your previous calculator workflow.</div>
+    <div class="grid4"><div class="field"><label>Power (kW)</label><input id="solarPower" type="number" step="0.01" value="0.90"></div><div class="field"><label>Backup Time (Hour)</label><input id="backupTime" type="number" step="0.1" value="3"></div><div class="field"><label>Battery DoD</label><input id="dod" type="number" step="0.01" value="0.8"></div><div class="field"><label>Efficiency</label><input id="eff" type="number" step="0.01" value="0.9"></div><div class="field"><label>Active Hours</label><input id="activeHours" type="number" step="0.1" value="4"></div><div class="field"><label>Panel Size (W)</label><input id="panelW" type="number" step="1" value="550"></div><div class="field"><label>Battery Volt</label><input id="batV" type="number" step="1" value="24"></div><div class="field"><label>Battery Ah</label><input id="batA" type="number" step="1" value="100"></div></div>
+    <div class="kpis"><div class="kpi"><span>Inverter</span><strong id="invSize">—</strong></div><div class="kpi"><span>Battery</span><strong id="batterySize">—</strong></div><div class="kpi"><span>PV Size</span><strong id="pvSize">—</strong></div><div class="kpi"><span>Panel Qty</span><strong id="panelQty">—</strong></div><div class="kpi good"><span>Battery Qty</span><strong id="batteryQty">—</strong></div></div>
+  </div>
+</section>
+
+<section id="rules" class="section">
+  <div class="panel">
+    <h3>Design Rules / Defaults</h3><div class="sub">Electrical engineer-এর approved rule অনুযায়ী এগুলো change করতে পারবেন। Auto diagram এই settings ব্যবহার করবে।</div>
+    <div class="grid4">
+      <div class="field"><label>SB points per circuit</label><input id="ruleLightPts" type="number" min="1" value="3" oninput="syncRules()"></div>
+      <div class="field"><label>TS points per circuit</label><input id="ruleSocketPts" type="number" min="1" value="3" oninput="syncRules()"></div>
+      <div class="field"><label>SB / Lighting MCB (A)</label><input id="ruleLightMcb" type="number" min="1" value="10" oninput="syncRules()"></div>
+      <div class="field"><label>TS / Socket MCB (A)</label><input id="ruleSocketMcb" type="number" min="1" value="16" oninput="syncRules()"></div>
+      <div class="field"><label>AC MCB (A)</label><input id="ruleAcMcb" type="number" min="1" value="20" oninput="syncRules()"></div>
+      <div class="field"><label>Geyser MCB (A)</label><input id="ruleGeyserMcb" type="number" min="1" value="20" oninput="syncRules()"></div>
+      <div class="field"><label>Spare circuits</label><input id="ruleSpare" type="number" min="0" max="6" value="1" oninput="syncRules()"></div>
+      <div class="field"><label>1Φ / 3Φ changeover at demand (kW)</label><input id="ruleThreePhaseKW" type="number" min="1" step="0.5" value="7" oninput="syncRules()"></div>
+    </div>
+    <div class="status warning" style="margin-top:14px">These are editable project assumptions, not a substitute for electrical code design. Keep them aligned with your electrical engineer's approved practice.</div>
+  </div>
+  <div class="panel"><h3>Equipment Reference</h3><div class="sub">Default wattage used by templates and manual load rows.</div><div id="equipPills" class="pillbox"></div></div>
+</section>
+</main>
+<div class="footer">Electrical Building & SDB Designer · <b>Designed by Engr. Avash</b> · v3 Excel Auto-Import Edition</div>
 </div>
+
 <script>
 const GATE_PASS='avash1972';
-function tryLogin(){const v=$('gatePass').value;if(v===GATE_PASS){try{localStorage.setItem('engrAvashAuth','ok')}catch(e){}unlockApp()}else{$('gateError').textContent='Wrong password. Try again.';$('gatePass').value='';$('gatePass').focus()}}
-function unlockApp(){document.getElementById('loginGate').style.display='none';document.getElementById('appShell').style.display=''}
-document.getElementById('gatePass').addEventListener('keydown',e=>{if(e.key==='Enter')tryLogin()});
-(function initGate(){let ok=false;try{ok=localStorage.getItem('engrAvashAuth')==='ok'}catch(e){}if(ok){unlockApp()}else{document.getElementById('gatePass').focus()}})();
-const floors=['GROUND','1ST','2ND','3RD','4TH','5TH','6TH','7TH','8TH','9TH','10TH'];
-const units=['COMMON','SDB1','SDB2','SDB3','SDB4','SDB5','SDB6'];
-const equipment={
-  'KITCHEN HOOD':0,'LIGHT LOAD':30,'FAN':80,'EXHUAST FAN':60,'TWO PIN SOCKET':100,'THREE PIN SOCKET':300,'AC':1800,'GEYSER':1500,'Fixt Socket power':1000,'Motor 1HP':750,'Motor 2HP':1500,'Motor 3HP':2500,'Motor 4HP':3200,'Chandelier Light':150,'LIFT':7500
-};
-const txSizes=[15,25,37.5,50,100,150,200,250,315,400,500,630,750,800,1000,1250];
-const breakers=[10,16,20,25,32,40,50,63,80,100,125,160,200,250,320,400,500,630,800,1000];
-const txCableAmp=[30,39,50,69,94,125,160,195,245,300,350,405,460,555,640,770,900,1030];
-const txCableMM=[2.5,4,6,10,16,25,35,50,70,95,120,150,185,240,300,400,500,630];
-const genSizes=[3,4,5,6,7,8,10,12,15,20,25,30,35,40,45,50,60,75,80,100];
-const mcbSizes=[6,10,16,20,25,32,40,50,63,80,100,125,160,200,250,320,400,500,630,800];
-const genCableMM=[1,1.5,2.5,4,6,10,16,25,35,50,70,95,120];
-const genCableAmp=[13,16,22,30,38,52,70,91,112,136,173,216,244];
-const inverterSizes=[0.5,1,1.2,3,5,6,8,10,12,15,20,25,30];
-let rows=[]; let comboDF={}; let currentLang='en';
 const $=id=>document.getElementById(id);
-function firstGE(arr,v){for(const x of arr)if(Number(x)>=v)return x;return arr[arr.length-1]??null}
-function nextGreater(arr,v){for(const x of arr)if(Number(x)>v)return x;return 'Out of Range'}
+const equipment={
+  'LIGHT LOAD':30,'FAN':80,'EXHAUST FAN':60,'TWO PIN SOCKET':100,'THREE PIN SOCKET':300,
+  'AC':1800,'GEYSER':1500,'FIXED SOCKET POWER':1000,'CHANDELIER LIGHT':150,'KITCHEN HOOD':250,
+  'MOTOR 1HP':750,'MOTOR 2HP':1500,'MOTOR 3HP':2500,'MOTOR 4HP':3200,'LIFT':7500
+};
+const FIXTURE_MASTER_DEFAULTS={
+  'SB':{meaning:'Switch Board (control only)',watt:0,type:'CONTROL',emergency:false,load:false},
+  'TS':{meaning:'Three Pin Socket',watt:300,type:'SOCKET',emergency:false,load:true},
+  'SBG':{meaning:'Switch Board for Geyser → counts as Geyser',watt:1500,type:'GEYSER',emergency:false,load:true},
+  'AC':{meaning:'Air Conditioner',watt:1800,type:'AC',emergency:false,load:true},
+  'B/E':{meaning:'Light point (B/E)',watt:30,type:'LIGHT',emergency:true,load:true},
+  'TUBE LIGHT':{meaning:'Tube / linear light',watt:30,type:'LIGHT',emergency:true,load:true},
+  'CL/E':{meaning:'Ceiling Light / Emergency',watt:30,type:'LIGHT',emergency:true,load:true},
+  'CL':{meaning:'Ceiling Light',watt:30,type:'LIGHT',emergency:true,load:true},
+  'B':{meaning:'Light point (B)',watt:30,type:'LIGHT',emergency:true,load:true},
+  'ML':{meaning:'Mirror / Misc. Light',watt:30,type:'LIGHT',emergency:true,load:true},
+  'CHL':{meaning:'Chandelier Light',watt:150,type:'LIGHT',emergency:true,load:true},
+  'FAN 48':{meaning:'48 inch Fan',watt:80,type:'FAN',emergency:true,load:true},
+  'FAN 56':{meaning:'56 inch Fan',watt:80,type:'FAN',emergency:true,load:true},
+  'FAN 56 / EF':{meaning:'56 inch Fan / Fan Point',watt:80,type:'FAN',emergency:true,load:true},
+  'EXF':{meaning:'Exhaust Fan',watt:60,type:'FAN',emergency:true,load:true},
+  'HOOD':{meaning:'Kitchen Hood',watt:250,type:'POWER',emergency:false,load:true},
+  'ISC':{meaning:'Fixed / appliance socket point',watt:1000,type:'POWER',emergency:false,load:true},
+  'IPS':{meaning:'IPS point / provision',watt:0,type:'CONTROL',emergency:false,load:false},
+  'BB':{meaning:'Bell / low-power point',watt:10,type:'OTHER',emergency:false,load:true},
+  'IC':{meaning:'Intercom point',watt:10,type:'OTHER',emergency:false,load:true},
+  'CB':{meaning:'Calling bell point',watt:10,type:'OTHER',emergency:false,load:true},
+  'CCTV':{meaning:'CCTV point',watt:15,type:'OTHER',emergency:false,load:true},
+  'NVR':{meaning:'NVR',watt:50,type:'OTHER',emergency:false,load:true},
+  'TV':{meaning:'TV point',watt:150,type:'POWER',emergency:false,load:true},
+  '00 9 BOARD 5':{meaning:'Switch board / control board',watt:0,type:'CONTROL',emergency:false,load:false},
+  '00 9 BOARD 6':{meaning:'Switch board / control board',watt:0,type:'CONTROL',emergency:false,load:false}
+};
+function cloneFixtureMaster(){return JSON.parse(JSON.stringify(FIXTURE_MASTER_DEFAULTS))}
+const txSizes=[15,25,37.5,50,100,150,200,250,315,400,500,630,750,800,1000,1250];
+const breakers=[6,10,16,20,25,32,40,50,63,80,100,125,160,200,250,320,400,500,630,800,1000];
+const cableMM=[1,1.5,2.5,4,6,10,16,25,35,50,70,95,120,150,185,240,300,400,500,630];
+const cableAmp=[13,16,22,30,38,52,70,91,112,136,173,216,244,280,320,380,450,520,600,720];
+const genSizes=[3,4,5,6,7,8,10,12,15,20,25,30,35,40,45,50,60,75,80,100,125,150,200,250];
+const inverterSizes=[0.5,1,1.2,3,5,6,8,10,12,15,20,25,30];
+let state={
+  settings:{projectName:'New Building',floors:['GROUND','1ST','2ND','3RD','4TH'],df:.7},
+  rules:{lightPts:3,socketPts:3,lightMcb:10,socketMcb:16,acMcb:20,geyserMcb:20,spare:1,threePhaseKW:7},
+  templates:[],placements:[],rows:[],fixtureMaster:cloneFixtureMaster(),importStats:{sourceSdb:0,physicalSdb:0,sourceFixture:0,buildingFixture:0,rows:0,file:""}
+};
+let templateSeq=1, placementSeq=1, rowSeq=1;
+
+function tryLogin(){const v=$('gatePass').value;if(v===GATE_PASS){try{localStorage.setItem('engrAvashAuth','ok')}catch(e){}unlockApp()}else{$('gateError').textContent='Wrong password. Try again.';$('gatePass').value='';$('gatePass').focus()}}
+function unlockApp(){$('loginGate').style.display='none';$('appShell').style.display=''}
+$('gatePass').addEventListener('keydown',e=>{if(e.key==='Enter')tryLogin()});
+(function(){try{if(localStorage.getItem('engrAvashAuth')==='ok')unlockApp();else $('gatePass').focus()}catch(e){$('gatePass').focus()}})();
+
+function esc(s){return String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
+function uid(prefix){return prefix+'_'+Date.now().toString(36)+'_'+Math.random().toString(36).slice(2,7)}
 function fmt(n,d=2){return Number.isFinite(+n)?Number(n).toFixed(d):'—'}
-function floorRank(f){return floors.indexOf(f)}
-function optionHTML(list,val){return '<option value=""></option>'+list.map(x=>`<option ${x===val?'selected':''}>${x}</option>`).join('')}
-function equipmentHTML(val){return '<option value=""></option>'+Object.keys(equipment).map(x=>`<option ${x===val?'selected':''}>${x}</option>`).join('')+'<option value="CUSTOM" '+(val==='CUSTOM'?'selected':'')+'>CUSTOM</option>'}
-function addRows(n=1){for(let i=0;i<n;i++)rows.push({floor:'',unit:'',equipment:'',watt:'',nl:'',el:''});renderRows();saveSilent()}
-function deleteRow(i){rows.splice(i,1);renderRows();recalc();saveSilent()}
-function renderRows(){const b=$('loadBody');b.innerHTML=rows.map((r,i)=>`<tr>
-<td><select onchange="setRow(${i},'floor',this.value)">${optionHTML(floors,r.floor)}</select></td>
-<td><select onchange="setRow(${i},'unit',this.value)">${optionHTML(units,r.unit)}</select></td>
-<td style="min-width:210px"><select onchange="setEquipment(${i},this.value)">${equipmentHTML(r.equipment)}</select></td>
-<td><input type="number" step="0.01" value="${r.watt??''}" onchange="setRow(${i},'watt',this.value)"></td>
-<td><input type="number" step="0.1" min="0" value="${r.nl??''}" onchange="setRow(${i},'nl',this.value)"></td>
-<td class="calc">${r.watt!==''&&r.nl!==''?fmt((+r.watt||0)*(+r.nl||0),0):''}</td>
-<td><input type="number" step="0.1" min="0" value="${r.el??''}" onchange="setRow(${i},'el',this.value)"></td>
-<td class="calc">${r.watt!==''&&r.el!==''?fmt((+r.watt||0)*(+r.el||0),0):''}</td>
-<td><button class="delete" onclick="deleteRow(${i})">×</button></td></tr>`).join('');recalc()}
-function setEquipment(i,v){rows[i].equipment=v;if(v!=='CUSTOM'&&equipment[v]!=null)rows[i].watt=equipment[v]||'';renderRows();saveSilent()}
-function setRow(i,k,v){rows[i][k]=v;recalc();saveSilent()}
-function totals(){let connected=0,emg=0;for(const r of rows){connected+=(+r.watt||0)*(+r.nl||0);emg+=(+r.watt||0)*(+r.el||0)}return{connected,emg}}
-function getDF(){return Math.max(0,Math.min(1,+$('globalDF').value||0))}
-function recalc(){
- const t=totals(), ck=t.connected/1000, ek=t.emg/1000, df=getDF(), demand=ck*df, margin=Math.floor(demand*1.2);
- $('heroConnected').textContent=fmt(ck)+' kW';$('heroEmergency').textContent=fmt(ek)+' kW';$('totalConnected').textContent=fmt(ck)+' kW';$('totalEmergency').textContent=fmt(ek)+' kW';$('dfKpi').textContent=fmt(df,2);$('demandKpi').textContent=fmt(demand)+' kW';$('marginKpi').textContent=fmt(margin,0)+' kW';
- $('mainConnected').textContent=fmt(ck,2)+' kW';$('mainDemand').textContent=fmt(demand,2)+' kW';$('mainMargin').textContent=fmt(margin,0)+' kW';$('mainEmergency').textContent=fmt(ek,2)+' kW';
- calcMain(ck,ek,df,margin);renderSummary();calcSolar();
+function firstGE(arr,v){for(const x of arr)if(Number(x)>=v)return x;return arr[arr.length-1]??null}
+function ordinal(n){if(n%100>=11&&n%100<=13)return n+'TH';return n+(n%10===1?'ST':n%10===2?'ND':n%10===3?'RD':'TH')}
+function floorRank(f){const i=state.settings.floors.indexOf(f);return i<0?999:i}
+function templateById(id){return state.templates.find(t=>t.id===id)}
+function placementByKey(floor,sdb){return state.placements.find(p=>p.floor===floor&&p.sdb===sdb)}
+function optionList(list,val){return list.map(x=>`<option value="${esc(x)}" ${String(x)===String(val)?'selected':''}>${esc(x)}</option>`).join('')}
+function saveSilent(){try{localStorage.setItem('engrAvashElectricalV3',JSON.stringify(state))}catch(e){}}
+function syncSettings(){state.settings.projectName=$('projectName').value||'New Building';state.settings.df=Math.max(0,Math.min(1,+$('globalDF').value||0));saveSilent();recalc()}
+function syncRules(){state.rules={lightPts:Math.max(1,+$('ruleLightPts').value||3),socketPts:Math.max(1,+$('ruleSocketPts').value||3),lightMcb:Math.max(1,+$('ruleLightMcb').value||10),socketMcb:Math.max(1,+$('ruleSocketMcb').value||16),acMcb:Math.max(1,+$('ruleAcMcb').value||20),geyserMcb:Math.max(1,+$('ruleGeyserMcb').value||20),spare:Math.max(0,+$('ruleSpare').value||0),threePhaseKW:Math.max(1,+$('ruleThreePhaseKW').value||7)};saveSilent();recalc();renderDiagrams()}
+
+
+function normalizeFixtureCode(v){return String(v??'').trim().replace(/\s+/g,' ').toUpperCase()}
+function masterFor(code){code=normalizeFixtureCode(code);return state.fixtureMaster?.[code]||{meaning:'Unmapped fixture — set watt/type',watt:0,type:'OTHER',emergency:false,load:false}}
+function fixtureCodes(){return Object.keys(state.fixtureMaster||{}).sort((a,b)=>a.localeCompare(b,undefined,{numeric:true}))}
+function renderFixtureMaster(){
+ const b=$('fixtureMasterBody'); if(!b)return; const types=['CONTROL','LIGHT','FAN','SOCKET','AC','GEYSER','POWER','OTHER'];
+ b.innerHTML=fixtureCodes().map(code=>{const m=state.fixtureMaster[code];return `<tr><td><b>${esc(code)}</b></td><td><input value="${esc(m.meaning||'')}" onchange="setFixtureMaster('${code.replaceAll("'","\\'")}','meaning',this.value)"></td><td><input type="number" min="0" step="1" value="${+m.watt||0}" onchange="setFixtureMaster('${code.replaceAll("'","\\'")}','watt',this.value)"></td><td><select onchange="setFixtureMaster('${code.replaceAll("'","\\'")}','type',this.value)">${optionList(types,m.type||'OTHER')}</select></td><td><select onchange="setFixtureMaster('${code.replaceAll("'","\\'")}','emergency',this.value)"><option value="yes" ${m.emergency?'selected':''}>YES</option><option value="no" ${!m.emergency?'selected':''}>NO</option></select></td><td><select onchange="setFixtureMaster('${code.replaceAll("'","\\'")}','load',this.value)"><option value="yes" ${m.load?'selected':''}>YES</option><option value="no" ${!m.load?'selected':''}>NO</option></select></td></tr>`}).join('')
 }
-function calcMain(ck,ek,df,margin){
- let tr='NO NEED',trBr='—',trCable='—',busA='—',busSize='—';
- const txTarget=margin/0.8;
- if(txTarget>=10){tr=firstGE(txSizes,txTarget);const I=tr*1000/(Math.sqrt(3)*415);trBr=firstGE(breakers,I)+' A';const Ieff=I/(0.9*0.8*0.95);const idx=txCableAmp.findIndex(x=>x>=Ieff);trCable=(idx>=0?txCableMM[idx]:txCableMM[txCableMM.length-1])+' mm²';busA=Math.floor(I*1.5)+' A';busSize=tr<=63?'25x5 mm Cu':tr<=100?'30x5 mm Cu':tr<=150?'50x5 mm Cu':tr<=250?'40x10 mm Cu':tr<=400?'60x10 mm Cu':tr<=630?'80x10 mm Cu':'Check Design'}
- $('trSize').textContent=(typeof tr==='number'?tr+' kVA':tr);$('trBreaker').textContent=trBr;$('trCable').textContent=trCable;$('trBusA').textContent=busA;$('trBusSize').textContent=busSize;
- let gen='No Need',gbr='—',gc='—';if(ek>0){gen=firstGE(genSizes,ek/0.8);const I=gen<=10?gen*1000/220:gen*1000/(Math.sqrt(3)*400);gbr=firstGE(breakers,I)+' A';const Ic=gen<=10?gen*1000/(220*0.7):gen*1000/(Math.sqrt(3)*415*0.7);const idx=genCableAmp.findIndex(x=>x>=Ic);gc=(idx>=0?genCableMM[idx]:genCableMM[genCableMM.length-1])+' mm²'}
- $('genSize').textContent=(typeof gen==='number'?gen+' kVA':gen);$('genBreaker').textContent=gbr;$('genCable').textContent=gc;$('genLoad').textContent=fmt(ek,2)+' kW';
+function setFixtureMaster(code,key,val){const m=state.fixtureMaster[code];if(!m)return;if(key==='watt')m.watt=Math.max(0,+val||0);else if(key==='emergency'||key==='load')m[key]=val==='yes';else m[key]=val;for(const r of state.rows){if(r.source==='excel'&&normalizeFixtureCode(r.fixtureCode||r.equipment)===code){if(key==='watt'||key==='load')r.watt=m.load?(+m.watt||0):0;if(key==='emergency')r.emg=m.emergency?(+r.qty||0):0}}renderLoadRows();recalc();saveSilent()}
+function resetFixtureMaster(){state.fixtureMaster=cloneFixtureMaster();for(const r of state.rows){if(r.source==='excel'){const m=masterFor(r.fixtureCode||r.equipment);r.watt=m.load?(+m.watt||0):0;r.emg=m.emergency?(+r.qty||0):0}}renderFixtureMaster();renderLoadRows();recalc();saveSilent()}
+function excelFloorListSort(a,b){const n=x=>x==='GROUND'?0:x==='COMMON'?999:(parseInt(x)||998);return n(a)-n(b)}
+function expandSdbName(raw){const name=String(raw??'').trim().toUpperCase().replace(/\s+/g,'');let m;
+ if(name==='COMMON')return [{floor:'COMMON',sdb:'COMMON',source:name}];
+ if((m=name.match(/^GF-(\d+)$/)))return [{floor:'GROUND',sdb:'SDB'+m[1],source:name}];
+ if((m=name.match(/^(\d+)(?:ST|ND|RD|TH)?-(\d+)$/)))return [{floor:ordinal(+m[1]),sdb:'SDB'+m[2],source:name}];
+ if((m=name.match(/^(\d+)(?:ST|ND|RD|TH)?TO(\d+)(?:ST|ND|RD|TH)?-(\d+)$/))){const out=[];for(let n=+m[1];n<=+m[2];n++)out.push({floor:ordinal(n),sdb:'SDB'+m[3],source:name});return out}
+ return [{floor:'GROUND',sdb:name||'SDB1',source:name||'UNKNOWN'}]
 }
-function groupData(){const map={};for(const r of rows){if(!r.floor||!r.unit)continue;const key=r.floor+'|'+r.unit;if(!map[key])map[key]={floor:r.floor,unit:r.unit,total:0,emg:0};map[key].total+=(+r.watt||0)*(+r.nl||0);map[key].emg+=(+r.watt||0)*(+r.el||0)}return Object.values(map).sort((a,b)=>floorRank(a.floor)-floorRank(b.floor)||units.indexOf(a.unit)-units.indexOf(b.unit))}
-function renderSummary(){const groups=groupData(), body=$('summaryBody'), gdf=getDF();body.innerHTML=groups.map((g,i)=>{const key=g.floor+'|'+g.unit;if(comboDF[key]==null)comboDF[key]=gdf;const df=+comboDF[key];const totalKW=Math.round((g.total/1000)*10)/10;const md=Math.floor(totalKW*df*1.2);const I=md?((md*1000)<=7000?(md*1000)/(230*0.8):(md*1000)/(Math.sqrt(3)*400*0.8)):0;const br=I?firstGE(mcbSizes,I):'';const cableIdx=genCableAmp.findIndex(x=>x>=I/0.7);const cable=I?(cableIdx>=0?genCableMM[cableIdx]:genCableMM[genCableMM.length-1]):'';const bus=I?(I<=12?'10x3 mm Cu':I<=25?'15x3 mm Cu':I<=40?'20x3 mm Cu':I<=63?'20x5 mm Cu':I<=100?'25x5 mm Cu':I<=160?'30x5 mm Cu':'40x5 mm Cu'):'';const bcu=I?Math.ceil(1.5*I):'';return `<tr><td>${g.floor}</td><td>${g.unit}</td><td class="calc">${fmt(totalKW,1)} kW</td><td>E${g.unit}</td><td class="calc">${fmt(g.emg,0)}</td><td><input type="number" min="0" max="1" step="0.01" value="${df}" onchange="setComboDF('${key}',this.value)"></td><td class="calc">${md||''}</td><td class="calc">${I?fmt(I,2):''}</td><td class="calc">${br?br+' A':''}</td><td class="calc">${cable?cable+' mm²':''}</td><td class="calc">${bus}</td><td class="calc">${bcu}</td></tr>`}).join('');if(!groups.length)body.innerHTML='<tr><td colspan="12" style="padding:24px;color:#817771">Enter Floor + Unit load rows first.</td></tr>'}
-function setComboDF(k,v){comboDF[k]=Math.max(0,Math.min(1,+v||0));renderSummary();saveSilent()}
-function syncDF(v){$('globalDF').value=v;$('globalDF2').value=v;recalc();saveSilent()}
-$('globalDF').addEventListener('input',e=>syncDF(e.target.value));$('globalDF2').addEventListener('input',e=>syncDF(e.target.value));
-function calcSolar(){const p=+$('solarPower').value||0,b=+$('backupTime').value||0,d=+$('dod').value||0,e=+$('eff').value||0,ah=+$('activeHours').value||0,pw=+$('panelW').value||1,bv=+$('batV').value||1,ba=+$('batA').value||1;const inv=nextGreater(inverterSizes,p*1.25);const bat=(d&&e)?p*b/(d*e):0;const daily=bat+p*ah;const pv=Math.floor(daily/(4.5*0.75));const panels=Math.ceil(pv*1000/pw);const area=panels*35;const bqty=Math.ceil(bat*1000/(bv*ba));const cost=(typeof inv==='number'?inv:0)*1000*150;$('invSize').textContent=(typeof inv==='number'?fmt(inv,2)+' kW':inv);$('batterySize').textContent=fmt(bat,2)+' kWh';$('dailyEnergy').textContent=fmt(daily,2)+' kWh';$('pvSize').textContent=fmt(pv,2)+' kW';$('panelQty').textContent=panels+' pcs';$('area').textContent=area+' sqft';$('batteryQty').textContent=bqty;$('solarCost').textContent=cost.toLocaleString()+' /='}
+function findFixtureRows(workbook){
+ const candidates=[]; for(const sheetName of workbook.SheetNames){const sh=workbook.Sheets[sheetName];const arr=XLSX.utils.sheet_to_json(sh,{header:1,defval:''});for(let i=0;i<Math.min(arr.length,25);i++){const hdr=(arr[i]||[]).map(x=>String(x).trim().toUpperCase());const sdbi=hdr.findIndex(x=>x.includes('SDB')&&x.includes('NAME'));const fi=hdr.findIndex(x=>x.includes('FIXTURE')&&x.includes('NAME'));const qi=hdr.findIndex(x=>x==='QTY'||x.includes('QUANTITY'));if(sdbi>=0&&fi>=0&&qi>=0)candidates.push({sheetName,arr,start:i+1,sdbi,fi,qi})}}
+ if(!candidates.length)throw new Error('Could not find columns: SDB / DB Name, Fixture Name, Qty.'); return candidates[0]
+}
+function importExcelFile(ev){const f=ev.target.files?.[0];if(!f)return;if(typeof XLSX==='undefined'){alert('Excel parser library did not load. Connect internet and reload the page, then try again.');ev.target.value='';return}const reader=new FileReader();reader.onload=e=>{try{const wb=XLSX.read(e.target.result,{type:'array'}),hit=findFixtureRows(wb);const raw=[];for(let i=hit.start;i<hit.arr.length;i++){const row=hit.arr[i]||[],sdb=String(row[hit.sdbi]??'').trim(),fixture=String(row[hit.fi]??'').trim(),qty=+row[hit.qi]||0;if(!sdb&&!fixture&&!qty)continue;if(/GRAND\s*TOTAL/i.test(sdb)||/GRAND\s*TOTAL/i.test(fixture))continue;if(!sdb||!fixture||qty<=0)continue;raw.push({sdb,fixture,qty})}
+ if(!raw.length)throw new Error('No fixture data rows found.');
+ const uniqueCodes=[...new Set(raw.map(x=>normalizeFixtureCode(x.fixture)))];for(const code of uniqueCodes)if(!state.fixtureMaster[code])state.fixtureMaster[code]={meaning:'Imported fixture — set watt/type if needed',watt:0,type:'OTHER',emergency:false,load:false};
+ const rows=[],placementsMap={},floors=new Set(),sourceSdb=new Set(),physicalSdb=new Set();let sourceFixture=0,buildingFixture=0;
+ for(const x of raw){sourceSdb.add(x.sdb);sourceFixture+=x.qty;const locations=expandSdbName(x.sdb);for(const loc of locations){floors.add(loc.floor);physicalSdb.add(loc.floor+'|'+loc.sdb);buildingFixture+=x.qty;const code=normalizeFixtureCode(x.fixture),m=masterFor(code);rows.push({id:uid('row'),floor:loc.floor,sdb:loc.sdb,label:loc.source==='COMMON'?'COMMON':'Imported '+loc.source,equipment:code,fixtureCode:code,watt:m.load?(+m.watt||0):0,qty:x.qty,emg:m.emergency?x.qty:0,source:'excel',sourceSdb:x.sdb});const pk=loc.floor+'|'+loc.sdb;if(!placementsMap[pk])placementsMap[pk]={id:uid('pl'),floor:loc.floor,sdb:loc.sdb,category:loc.sdb==='COMMON'?'COMMON':'UNIT',label:loc.source==='COMMON'?'COMMON':'Imported '+loc.source,templateId:'',df:state.settings.df}}
+ }
+ state.settings.df=.7;$('globalDF').value=.7;state.settings.floors=[...floors].sort(excelFloorListSort);state.rows=rows;state.placements=Object.values(placementsMap);state.importStats={sourceSdb:sourceSdb.size,physicalSdb:physicalSdb.size,sourceFixture,buildingFixture,rows:rows.length,file:f.name};renderAll();saveSilent();showSection('excelimport');$('excelStatus').className='status success';$('excelStatus').innerHTML=`<b>${esc(f.name)}</b> imported from sheet <b>${esc(hit.sheetName)}</b>. Range floors were expanded automatically. Check Fixture Master, then open SDB Summary / Auto Diagrams.`}catch(err){$('excelStatus').className='status warning';$('excelStatus').textContent='Import failed: '+err.message;alert('Excel import failed: '+err.message)}finally{ev.target.value=''}};reader.readAsArrayBuffer(f)}
+function updateImportStats(){const st=state.importStats||{};if($('impSourceSdb'))$('impSourceSdb').textContent=st.sourceSdb||0;if($('impPhysicalSdb'))$('impPhysicalSdb').textContent=st.physicalSdb||0;if($('impSourceFixture'))$('impSourceFixture').textContent=st.sourceFixture||0;if($('impBuildingFixture'))$('impBuildingFixture').textContent=st.buildingFixture||0;if($('impRows'))$('impRows').textContent=st.rows||0;if($('excelStatus')&&st.file){$('excelStatus').className='status success';$('excelStatus').innerHTML=`Loaded: <b>${esc(st.file)}</b> · ${st.physicalSdb||0} physical SDBs · ${st.buildingFixture||0} building fixture points after floor-range expansion.`}}
+function clearExcelImport(){if(!confirm('Clear imported Excel rows and SDBs?'))return;state.rows=state.rows.filter(r=>r.source!=='excel');state.placements=[];state.importStats={sourceSdb:0,physicalSdb:0,sourceFixture:0,buildingFixture:0,rows:0,file:''};renderAll();saveSilent();if($('excelStatus')){$('excelStatus').className='status';$('excelStatus').innerHTML='No Excel imported yet. Expected columns: <b>SDB / DB Name · Fixture Name · Qty</b>.'}}
+
+function generateFloors(){const n=Math.max(0,Math.min(50,+$('upperFloorCount').value||0)), g=$('hasGround').value==='yes';const fs=[];if(g)fs.push('GROUND');for(let i=1;i<=n;i++)fs.push(ordinal(i));state.settings.floors=fs.length?fs:['GROUND'];state.placements=state.placements.filter(p=>state.settings.floors.includes(p.floor));renderAll();saveSilent()}
+function renderFloorPills(){$('floorPills').innerHTML=state.settings.floors.map(f=>`<span class="pill floor">${esc(f)}</span>`).join('');$('quickFloor').innerHTML=optionList(state.settings.floors,$('quickFloor').value)}
+
+function defaultFixtures(){return Object.entries({'LIGHT LOAD':0,'FAN':0,'EXHAUST FAN':0,'TWO PIN SOCKET':0,'THREE PIN SOCKET':0,'AC':0,'GEYSER':0}).map(([name,qty])=>({id:uid('fx'),name,watt:equipment[name],qty,emg:0}))}
+function addTemplate(name){state.templates.push({id:uid('tpl'),name:name||('UNIT '+String.fromCharCode(65+state.templates.length)),fixtures:defaultFixtures()});renderTemplates();renderPlacements();saveSilent()}
+function addDefaultTemplate(name){if(state.templates.some(t=>t.name.toUpperCase()===name.toUpperCase()))return;addTemplate(name)}
+function deleteTemplate(id){if(state.placements.some(p=>p.templateId===id)){alert('This template is used by an SDB. Change/remove that SDB first.');return}state.templates=state.templates.filter(t=>t.id!==id);renderTemplates();renderPlacements();saveSilent()}
+function updateTemplate(id,key,val){const t=templateById(id);if(!t)return;t[key]=val;renderPlacements();saveSilent()}
+function addFixture(tid){const t=templateById(tid);if(!t)return;t.fixtures.push({id:uid('fx'),name:'LIGHT LOAD',watt:30,qty:0,emg:0});renderTemplates();saveSilent()}
+function deleteFixture(tid,fid){const t=templateById(tid);if(!t)return;t.fixtures=t.fixtures.filter(f=>f.id!==fid);renderTemplates();saveSilent()}
+function setFixture(tid,fid,key,val){const t=templateById(tid),f=t?.fixtures.find(x=>x.id===fid);if(!f)return;if(key==='name'){f.name=val;if(val!=='CUSTOM'&&equipment[val]!=null)f.watt=equipment[val]}else if(['watt','qty','emg'].includes(key))f[key]=Math.max(0,+val||0);else f[key]=val;saveSilent();renderTemplates(false)}
+function renderTemplates(full=true){const host=$('templateList');if(!state.templates.length){host.innerHTML='<div class="empty">No template yet. Click “New Template”.</div>';return}host.innerHTML=state.templates.map(t=>`<div class="template-card"><div class="template-head"><input class="template-name" value="${esc(t.name)}" onchange="updateTemplate('${t.id}','name',this.value)"><div><button class="btn small" onclick="addFixture('${t.id}')">+ Fixture</button> <button class="btn small red" onclick="deleteTemplate('${t.id}')">Delete</button></div></div><div class="table-wrap"><table class="sheet" style="min-width:620px"><thead><tr><th>Fixture</th><th>Watt</th><th>Qty</th><th>EMG Qty</th><th></th></tr></thead><tbody>${t.fixtures.map(f=>`<tr><td><select onchange="setFixture('${t.id}','${f.id}','name',this.value)">${optionList([...Object.keys(equipment),'CUSTOM'],f.name)}</select></td><td><input type="number" min="0" value="${f.watt}" onchange="setFixture('${t.id}','${f.id}','watt',this.value)"></td><td><input type="number" min="0" step="1" value="${f.qty}" onchange="setFixture('${t.id}','${f.id}','qty',this.value)"></td><td><input type="number" min="0" step="1" value="${f.emg}" onchange="setFixture('${t.id}','${f.id}','emg',this.value)"></td><td><button class="delete" onclick="deleteFixture('${t.id}','${f.id}')">×</button></td></tr>`).join('')}</tbody></table></div><div class="note">Template connected load: <b>${fmt(t.fixtures.reduce((s,f)=>s+(+f.watt||0)*(+f.qty||0),0)/1000,2)} kW</b></div></div>`).join('');renderTemplateSelects()}
+function renderTemplateSelects(){const opts=state.templates.map(t=>`<option value="${t.id}">${esc(t.name)}</option>`).join('');if($('quickTemplate'))$('quickTemplate').innerHTML=opts}
+
+function nextSdbName(floor){const used=state.placements.filter(p=>p.floor===floor).map(p=>p.sdb);let i=1;while(used.includes('SDB'+i))i++;return 'SDB'+i}
+function addPlacement(floor,templateId,category='UNIT'){floor=floor||state.settings.floors[0]||'GROUND';templateId=templateId||state.templates[0]?.id||'';state.placements.push({id:uid('pl'),floor,sdb:nextSdbName(floor),category,label:templateById(templateId)?.name||'AREA',templateId,df:state.settings.df});renderPlacements();saveSilent();recalc()}
+function deletePlacement(id){state.placements=state.placements.filter(p=>p.id!==id);renderPlacements();saveSilent();recalc()}
+function setPlacement(id,key,val){const p=state.placements.find(x=>x.id===id);if(!p)return;p[key]=key==='df'?Math.max(0,Math.min(1,+val||0)):val;saveSilent();recalc()}
+function renderPlacements(){const b=$('placementBody');if(!state.placements.length){b.innerHTML='<tr><td colspan="7" class="empty">No SDB added yet.</td></tr>';return}b.innerHTML=state.placements.sort((a,b)=>floorRank(a.floor)-floorRank(b.floor)||a.sdb.localeCompare(b.sdb,undefined,{numeric:true})).map(p=>`<tr><td><select onchange="setPlacement('${p.id}','floor',this.value)">${optionList(state.settings.floors,p.floor)}</select></td><td><input value="${esc(p.sdb)}" onchange="setPlacement('${p.id}','sdb',this.value)"></td><td><select onchange="setPlacement('${p.id}','category',this.value)">${optionList(['UNIT','COMMON'],p.category)}</select></td><td><input value="${esc(p.label)}" onchange="setPlacement('${p.id}','label',this.value)"></td><td><select onchange="setPlacement('${p.id}','templateId',this.value)">${state.templates.map(t=>`<option value="${t.id}" ${t.id===p.templateId?'selected':''}>${esc(t.name)}</option>`).join('')}</select></td><td><input type="number" min="0" max="1" step="0.01" value="${p.df}" onchange="setPlacement('${p.id}','df',this.value)"></td><td><button class="delete" onclick="deletePlacement('${p.id}')">×</button></td></tr>`).join('')}
+function quickAddSdbs(){const floor=$('quickFloor').value,tid=$('quickTemplate').value,qty=Math.max(1,+$('quickQty').value||1);for(let i=0;i<qty;i++)addPlacement(floor,tid,'UNIT');renderPlacements();recalc()}
+
+function buildLoadSchedule(go=false){const newRows=[];for(const p of state.placements){const t=templateById(p.templateId);if(!t)continue;for(const f of t.fixtures){if((+f.qty||0)<=0&&(+f.emg||0)<=0)continue;newRows.push({id:uid('row'),floor:p.floor,sdb:p.sdb,label:p.label,equipment:f.name,watt:+f.watt||0,qty:+f.qty||0,emg:+f.emg||0,source:'template'})}}state.rows=newRows;renderLoadRows();recalc();saveSilent();if(go)showSection('load')}
+function addLoadRow(){state.rows.push({id:uid('row'),floor:state.settings.floors[0]||'GROUND',sdb:'SDB1',label:'MANUAL',equipment:'LIGHT LOAD',watt:30,qty:0,emg:0,source:'manual'});renderLoadRows();recalc();saveSilent()}
+function deleteLoadRow(id){state.rows=state.rows.filter(r=>r.id!==id);renderLoadRows();recalc();saveSilent()}
+function setLoadRow(id,key,val){const r=state.rows.find(x=>x.id===id);if(!r)return;if(['watt','qty','emg'].includes(key))r[key]=Math.max(0,+val||0);else{r[key]=val;if(key==='equipment'){r.fixtureCode=normalizeFixtureCode(val);if(val!=='CUSTOM'&&equipment[val]!=null)r.watt=equipment[val];else if(state.fixtureMaster[r.fixtureCode]){const m=masterFor(r.fixtureCode);r.watt=m.load?(+m.watt||0):0}}}renderLoadRows();recalc();saveSilent()}
+function allSdbNames(){return [...new Set([...state.placements.map(p=>p.sdb),...state.rows.map(r=>r.sdb)])].filter(Boolean)}
+function renderLoadRows(){const b=$('loadBody');if(!state.rows.length){b.innerHTML='<tr><td colspan="10" class="empty">Build the load schedule from your SDB plan, or add a manual row.</td></tr>';return}b.innerHTML=state.rows.map(r=>`<tr><td><select onchange="setLoadRow('${r.id}','floor',this.value)">${optionList(state.settings.floors,r.floor)}</select></td><td><input value="${esc(r.sdb)}" onchange="setLoadRow('${r.id}','sdb',this.value)"></td><td><input value="${esc(r.label)}" onchange="setLoadRow('${r.id}','label',this.value)"></td><td><select onchange="setLoadRow('${r.id}','equipment',this.value)">${optionList([...new Set([...fixtureCodes(),...Object.keys(equipment),'CUSTOM'])],r.equipment)}</select></td><td><input type="number" min="0" value="${r.watt}" onchange="setLoadRow('${r.id}','watt',this.value)"></td><td><input type="number" min="0" step="1" value="${r.qty}" onchange="setLoadRow('${r.id}','qty',this.value)"></td><td class="calc">${fmt(r.watt*r.qty,0)}</td><td><input type="number" min="0" step="1" value="${r.emg}" onchange="setLoadRow('${r.id}','emg',this.value)"></td><td class="calc">${fmt(r.watt*r.emg,0)}</td><td><button class="delete" onclick="deleteLoadRow('${r.id}')">×</button></td></tr>`).join('')}
+
+function groupData(){const map={};for(const r of state.rows){if(!r.floor||!r.sdb)continue;const key=r.floor+'|'+r.sdb;if(!map[key]){const p=placementByKey(r.floor,r.sdb);map[key]={key,floor:r.floor,sdb:r.sdb,label:r.label||p?.label||'',df:p?.df??state.settings.df,total:0,emg:0,rows:[]}}map[key].total+=(+r.watt||0)*(+r.qty||0);map[key].emg+=(+r.watt||0)*(+r.emg||0);map[key].rows.push(r)}return Object.values(map).sort((a,b)=>floorRank(a.floor)-floorRank(b.floor)||a.sdb.localeCompare(b.sdb,undefined,{numeric:true}))}
+function groupDesign(g){const connected=g.total/1000,demand=connected*(+g.df||0),three=demand>state.rules.threePhaseKW;const I=demand<=0?0:(demand*1000)/(three?Math.sqrt(3)*400*.8:230*.8);const br=I?firstGE(breakers,I):0;const idx=cableAmp.findIndex(x=>x>=I/.7);const cable=I?(idx>=0?cableMM[idx]:cableMM[cableMM.length-1]):0;const bus=I?(I<=12?'10×3 mm Cu':I<=25?'15×3 mm Cu':I<=40?'20×3 mm Cu':I<=63?'20×5 mm Cu':I<=100?'25×5 mm Cu':I<=160?'30×5 mm Cu':'40×5 mm Cu'):'—';const circuits=makeCircuits(g);return{connected,demand,three,I,br,cable,bus,circuits}}
+function makeCircuits(g){const r=state.rules,rows=g.rows||[];let sbQty=0,tsQty=0,acQty=0,geyQty=0,fallbackLight=0,fallbackSocket=0;for(const x of rows){const code=normalizeFixtureCode(x.fixtureCode||x.equipment),q=Math.ceil(+x.qty||0),m=masterFor(code);if(!q)continue;if(code==='SB')sbQty+=q;else if(code==='TS')tsQty+=q;else if(code==='AC'||m.type==='AC')acQty+=q;else if(code==='SBG'||m.type==='GEYSER')geyQty+=q;else if(m.type==='LIGHT'||m.type==='FAN')fallbackLight+=q;else if(m.type==='SOCKET')fallbackSocket+=q}
+ if(sbQty===0)sbQty=fallbackLight;if(tsQty===0)tsQty=fallbackSocket;const out=[];for(let start=1;start<=sbQty;start+=r.lightPts){const end=Math.min(sbQty,start+r.lightPts-1);out.push({code:'SB',label:`SB(${start}~${end})`,amp:r.lightMcb,kind:'LIGHT'})}for(let start=1;start<=tsQty;start+=r.socketPts){const end=Math.min(tsQty,start+r.socketPts-1);out.push({code:'TS',label:`TS(${start}~${end})`,amp:r.socketMcb,kind:'SOCKET'})}for(let i=1;i<=acQty;i++)out.push({code:'AC',label:'AC'+i,amp:r.acMcb,kind:'AC'});for(let i=1;i<=geyQty;i++)out.push({code:'SBG',label:'SBG'+i,amp:r.geyserMcb,kind:'GEYSER'});for(let i=1;i<=r.spare;i++)out.push({code:'SP',label:'SPARE'+(r.spare>1?' '+i:''),amp:20,kind:'SPARE'});return out}
+
+function totals(){const connected=state.rows.reduce((s,r)=>s+(+r.watt||0)*(+r.qty||0),0)/1000,emg=state.rows.reduce((s,r)=>s+(+r.watt||0)*(+r.emg||0),0)/1000;const demand=groupData().reduce((s,g)=>s+(g.total/1000)*(+g.df||0),0);return{connected,emg,demand}}
+function renderSummary(){const groups=groupData(),b=$('summaryBody');if(!groups.length){b.innerHTML='<tr><td colspan="13" class="empty">No SDB load data yet.</td></tr>';return}b.innerHTML=groups.map(g=>{const d=groupDesign(g);return `<tr><td>${esc(g.floor)}</td><td><b>${esc(g.sdb)}</b></td><td>${esc(g.label)}</td><td class="calc">${fmt(d.connected,2)} kW</td><td class="calc">${fmt(g.emg/1000,2)} kW</td><td>${fmt(g.df,2)}</td><td class="calc">${fmt(d.demand,2)} kW</td><td>${d.three?'3Φ (TP)':'1Φ (DP)'}</td><td class="calc">${fmt(d.I,2)} A</td><td class="calc">${d.br?d.br+'A '+(d.three?'TP':'DP')+' RCBO':'—'}</td><td class="calc">${d.cable?d.cable+' mm²':'—'}</td><td>${d.bus}</td><td>${d.circuits.length}</td></tr>`}).join('')}
+
+function recalc(){const t=totals(),groups=groupData();$('heroSdb').textContent=groups.length;$('heroConnected').textContent=fmt(t.connected)+' kW';$('heroDemand').textContent=fmt(t.demand)+' kW';$('heroEmergency').textContent=fmt(t.emg)+' kW';$('totalConnected').textContent=fmt(t.connected)+' kW';$('totalDemand').textContent=fmt(t.demand)+' kW';$('totalEmergency').textContent=fmt(t.emg)+' kW';$('totalSdb').textContent=groups.length;$('marginKpi').textContent=fmt(t.demand*1.2)+' kW';renderSummary();calcMain(t);calcSolar();refreshDiagramSelect();renderMainSld()}
+function calcMain(t){$('mainConnected').textContent=fmt(t.connected)+' kW';$('mainDemand').textContent=fmt(t.demand)+' kW';$('mainMargin').textContent=fmt(t.demand*1.2)+' kW';$('mainEmergency').textContent=fmt(t.emg)+' kW';const target=t.demand*1.2/.8;let tr='NO NEED',trB='—',trC='—',trBus='—';if(target>=10){tr=firstGE(txSizes,target);const I=tr*1000/(Math.sqrt(3)*415),br=firstGE(breakers,I),idx=cableAmp.findIndex(x=>x>=I/(.9*.8*.95));trB=br+' A TP MCCB';trC=(idx>=0?cableMM[idx]:cableMM[cableMM.length-1])+' mm²';trBus=tr<=63?'25×5 mm Cu':tr<=100?'30×5 mm Cu':tr<=150?'50×5 mm Cu':tr<=250?'40×10 mm Cu':tr<=400?'60×10 mm Cu':tr<=630?'80×10 mm Cu':'Check Design'}$('trSize').textContent=typeof tr==='number'?tr+' kVA':tr;$('trBreaker').textContent=trB;$('trCable').textContent=trC;$('trBusSize').textContent=trBus;let gen='NO NEED',gb='—',gc='—';if(t.emg>0){gen=firstGE(genSizes,t.emg/.8);const I=gen<=10?gen*1000/220:gen*1000/(Math.sqrt(3)*400);gb=firstGE(breakers,I)+' A '+(gen<=10?'DP':'TP')+' MCCB';const idx=cableAmp.findIndex(x=>x>=I/.7);gc=(idx>=0?cableMM[idx]:cableMM[cableMM.length-1])+' mm²'}$('genSize').textContent=typeof gen==='number'?gen+' kVA':gen;$('genBreaker').textContent=gb;$('genCable').textContent=gc;$('genLoad').textContent=fmt(t.emg)+' kW'}
+
+function calcSolar(){const p=+$('solarPower').value||0,b=+$('backupTime').value||0,d=+$('dod').value||0,e=+$('eff').value||0,ah=+$('activeHours').value||0,pw=+$('panelW').value||1,bv=+$('batV').value||1,ba=+$('batA').value||1;const inv=firstGE(inverterSizes,p*1.25),bat=(d&&e)?p*b/(d*e):0,daily=bat+p*ah,pv=daily/(4.5*.75),panels=Math.ceil(pv*1000/pw),bqty=Math.ceil(bat*1000/(bv*ba));$('invSize').textContent=inv+' kW';$('batterySize').textContent=fmt(bat)+' kWh';$('pvSize').textContent=fmt(pv)+' kW';$('panelQty').textContent=panels+' pcs';$('batteryQty').textContent=bqty}
 ['solarPower','backupTime','dod','eff','activeHours','panelW','batV','batA'].forEach(id=>$(id).addEventListener('input',()=>{calcSolar();saveSilent()}));
-function loadExcelExample(){rows=[
- {floor:'GROUND',unit:'SDB1',equipment:'Motor 2HP',watt:1500,nl:1,el:''},{floor:'GROUND',unit:'SDB1',equipment:'LIGHT LOAD',watt:30,nl:50,el:25},{floor:'GROUND',unit:'SDB1',equipment:'FAN',watt:80,nl:6,el:5},{floor:'GROUND',unit:'SDB1',equipment:'EXHUAST FAN',watt:60,nl:2,el:''},{floor:'GROUND',unit:'SDB1',equipment:'TWO PIN SOCKET',watt:100,nl:6,el:''},{floor:'GROUND',unit:'SDB1',equipment:'THREE PIN SOCKET',watt:300,nl:16,el:''},{floor:'GROUND',unit:'SDB1',equipment:'AC',watt:1800,nl:3,el:''},{floor:'GROUND',unit:'SDB1',equipment:'GEYSER',watt:1500,nl:2,el:''},{floor:'GROUND',unit:'SDB1',equipment:'Fixt Socket power',watt:1000,nl:.5,el:''},{floor:'GROUND',unit:'SDB1',equipment:'Chandelier Light',watt:150,nl:1,el:''},
- {floor:'1ST',unit:'SDB1',equipment:'LIGHT LOAD',watt:30,nl:35,el:17},{floor:'1ST',unit:'SDB1',equipment:'FAN',watt:80,nl:6,el:6},{floor:'1ST',unit:'SDB1',equipment:'EXHUAST FAN',watt:60,nl:3,el:''},{floor:'1ST',unit:'SDB1',equipment:'TWO PIN SOCKET',watt:100,nl:7,el:''},{floor:'1ST',unit:'SDB1',equipment:'THREE PIN SOCKET',watt:300,nl:13,el:''},{floor:'1ST',unit:'SDB1',equipment:'AC',watt:1800,nl:4,el:''},{floor:'1ST',unit:'SDB1',equipment:'GEYSER',watt:1500,nl:3,el:''},{floor:'1ST',unit:'SDB1',equipment:'Fixt Socket power',watt:1000,nl:1,el:''}
- ];while(rows.length<26)rows.push({floor:'',unit:'',equipment:'',watt:'',nl:'',el:''});$('globalDF').value=.5;$('globalDF2').value=.5;comboDF={};renderRows();saveSilent()}
-function clearAll(){if(!confirm(currentLang==='bn'?'সব ইনপুট মুছে ফেলবেন?':'Clear all inputs?'))return;rows=[];comboDF={};addRows(24);$('globalDF').value=.5;$('globalDF2').value=.5;recalc();saveSilent()}
-function projectData(){return{rows,comboDF,df:getDF(),solar:{power:$('solarPower').value,backup:$('backupTime').value,dod:$('dod').value,eff:$('eff').value,active:$('activeHours').value,panel:$('panelW').value,bv:$('batV').value,ba:$('batA').value},lang:currentLang}}
-function saveSilent(){try{localStorage.setItem('engrAvashElectrical',JSON.stringify(projectData()))}catch(e){}}
-let _downloadsCap=null,_downloadsChecked=false;
-async function getDownloads(){if(_downloadsChecked)return _downloadsCap;_downloadsChecked=true;try{if(window.claude&&typeof window.claude.use==='function'){_downloadsCap=await window.claude.use('downloads')}}catch(e){_downloadsCap=null}return _downloadsCap}
-async function downloadFile(filename,blob){const dl=await getDownloads();if(dl){try{await dl.save({filename,data:blob});return}catch(e){if(e&&e.code==='declined')return}}const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=filename;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}
-function saveProject(){saveSilent();const blob=new Blob([JSON.stringify(projectData(),null,2)],{type:'application/json'});downloadFile('Engr_Avash_Electrical_Project.json',blob)}
-function restore(){try{const d=JSON.parse(localStorage.getItem('engrAvashElectrical')||'null');if(!d)return false;rows=d.rows||[];comboDF=d.comboDF||{};$('globalDF').value=d.df??.5;$('globalDF2').value=d.df??.5;if(d.solar){$('solarPower').value=d.solar.power??.9;$('backupTime').value=d.solar.backup??3;$('dod').value=d.solar.dod??.8;$('eff').value=d.solar.eff??.9;$('activeHours').value=d.solar.active??4;$('panelW').value=d.solar.panel??550;$('batV').value=d.solar.bv??24;$('batA').value=d.solar.ba??100}currentLang=d.lang||'en';return true}catch(e){return false}}
-function exportCSV(){const lines=[['FLOOR','UNIT','EQUIPMENT NAME','WATTAGE','N.L.QTY','TOTAL CONNECTED LOAD','E.L.QTY','TOTAL EMG']];for(const r of rows){if(!r.floor&&!r.unit&&!r.equipment&&!r.watt&&!r.nl&&!r.el)continue;lines.push([r.floor,r.unit,r.equipment,r.watt,r.nl,(+r.watt||0)*(+r.nl||0),r.el,(+r.watt||0)*(+r.el||0)])}const csv=lines.map(a=>a.map(v=>'"'+String(v??'').replaceAll('"','""')+'"').join(',')).join('\n');const blob=new Blob([csv],{type:'text/csv'});downloadFile('Electrical_Load_Schedule_Engr_Avash.csv',blob)}
-function showSection(id){document.querySelectorAll('.section').forEach(x=>x.classList.toggle('active',x.id===id));document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('active',x.dataset.section===id));window.scrollTo({top:document.querySelector('.tabs').offsetTop-88,behavior:'smooth'});if(id==='summary')renderSummary();if(id==='main')recalc()}
-const tr={bn:{appTitle:'ইলেকট্রিক্যাল লোড ক্যালকুলেশন',saveProject:'প্রজেক্ট সেভ',print:'প্রিন্ট',startCalculation:'ক্যালকুলেশন শুরু',heroText:'এই ভার্সনটি আপনার Excel-এর structure অনুসরণ করে: Floor → Unit/SDB → Equipment → Wattage → Normal Load Qty → Connected Load → Emergency Qty → Emergency Load; এরপর SDB, transformer, generator, cable ও busbar calculation automatic হয়।',enterLoads:'লোড এন্ট্রি',loadExample:'Excel উদাহরণ লোড',clearAll:'সব মুছুন',connectedLoad:'Connected Load',emergencyLoad:'Emergency Load',designFlow:'Design Flow',flowText:'Excel “Check” sheet-এর exact floor/unit grouping logic.',loadEntry:'Load Entry',sdbSummary:'SDB Summary',mainSizing:'Transformer / Generator',solar:'Solar',reference:'Excel Reference',loadSchedule:'Load Schedule',loadScheduleSub:'প্রতিটি row-তে আপনার Excel-এর মতো Floor, Unit/SDB ও Equipment option আছে। Equipment select করলে Wattage auto আসবে, চাইলে edit করতে পারবেন।',addRow:'Row যোগ',floor:'Floor',unit:'Unit',equipment:'Equipment Name',wattage:'Wattage',totalConnected:'Total Connected Load',totalEmg:'Total EMG',demandFactor:'Demand Factor',demandLoad:'Demand Load',margin20:'20% Margin Load',summarySub:'সব load row Floor + Unit অনুযায়ী automatic group হয়। প্রতিটি floor এবং প্রতিটি SDB/Common option supported.',defaultDF:'Default D. Factor',mainSub:'Excel Check sheet-এর একই reference array ও selection logic দিয়ে transformer, generator, breaker, cable ও copper busbar sizing.',globalDF:'Global Demand Factor'}};
-function applyLang(){document.querySelectorAll('[data-i18n]').forEach(el=>{const k=el.dataset.i18n;if(currentLang==='bn'&&tr.bn[k])el.textContent=tr.bn[k];else if(el.dataset.en)el.textContent=el.dataset.en});$('langBtn').textContent=currentLang==='en'?'বাংলা':'EN';document.documentElement.lang=currentLang==='bn'?'bn':'en'}
-// capture original English text once
-document.querySelectorAll('[data-i18n]').forEach(el=>el.dataset.en=el.textContent);
-$('langBtn').addEventListener('click',()=>{currentLang=currentLang==='en'?'bn':'en';applyLang();saveSilent()});
-function initRef(){
- $('floorPills').innerHTML=floors.map(x=>`<span class="pill">${x}</span>`).join('');$('unitPills').innerHTML=units.map(x=>`<span class="pill">${x}</span>`).join('');$('equipPills').innerHTML=Object.entries(equipment).filter(([k])=>k!=='KITCHEN HOOD').map(([k,v])=>`<span class="pill">${k} · ${v}W</span>`).join('');$('txRef').textContent=txSizes.join(', ');$('breakerRef').textContent=breakers.join(', ');$('genRef').textContent=genSizes.join(', ');$('cableRef').textContent=genCableMM.join(', ')
+
+function refreshDiagramSelect(){const sel=$('diagramSelect');if(!sel)return;const cur=sel.value,groups=groupData();sel.innerHTML='<option value="ALL">Show all SDBs</option>'+groups.map(g=>`<option value="${esc(g.key)}">${esc(g.floor)} · ${esc(g.sdb)} · ${esc(g.label)}</option>`).join('');if([...sel.options].some(o=>o.value===cur))sel.value=cur}
+function svgText(x,y,text,size=12,anchor='start',fill='#111',weight='400',rotate=''){return `<text x="${x}" y="${y}" font-family="Arial, sans-serif" font-size="${size}" text-anchor="${anchor}" fill="${fill}" font-weight="${weight}" ${rotate?`transform="rotate(${rotate} ${x} ${y})"`:''}>${esc(text)}</text>`}
+function sdbSvg(g){const d=groupDesign(g),c=d.circuits,w=Math.max(920,220+c.length*100),h=560,barY=205,startX=90,step=(w-180)/Math.max(1,c.length);const incomingX=Math.min(w-330,460);let s=`<svg id="svg_${safeId(g.key)}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}"><rect width="100%" height="100%" fill="#efecdf"/>`;
+ s+=svgText(74,74,`${g.sdb} - ${g.floor} - ${g.label}`,16,'start','#000','700');s+=svgText(74,104,`Connecting Load ${fmt(d.connected,2)} kW`,15,'start','#f00','500');s+=svgText(74,130,`Demand Load ${fmt(d.demand,2)} kW`,15,'start','#00a52a','500');
+ s+=svgText(incomingX+28,29,'MDB',16,'middle','#f00','500');s+=`<line x1="${incomingX}" y1="37" x2="${incomingX+56}" y2="37" stroke="#111" stroke-width="1"/><line x1="${incomingX+12}" y1="38" x2="${incomingX+12}" y2="${barY}" stroke="#000" stroke-width="2"/><polygon points="${incomingX+12},38 ${incomingX+6},58 ${incomingX+18},58" fill="#000"/><line x1="${incomingX+42}" y1="38" x2="${incomingX+42}" y2="${barY}" stroke="#f00" stroke-width="2"/><polygon points="${incomingX+42},38 ${incomingX+36},58 ${incomingX+48},58" fill="#f00"/>`;
+ const poles=d.three?'TP':'DP';s+=svgText(incomingX+76,82,`${d.three?'1C-4X':'1C-2X'}${d.cable||2.5}mm² BYM Cables`,12);s+=svgText(incomingX+76,102,`1C-1X${d.cable||2.5}mm² BYA Cables ECC`,12);s+=`<rect x="${incomingX+17}" y="118" width="50" height="58" fill="none" stroke="#333" stroke-width="1" stroke-dasharray="8 5"/><circle cx="${incomingX+42}" cy="132" r="5" fill="#efecdf" stroke="#f00"/><circle cx="${incomingX+42}" cy="162" r="5" fill="#efecdf" stroke="#f00"/><line x1="${incomingX+38}" y1="144" x2="${incomingX+48}" y2="151" stroke="#111"/>`;
+ s+=svgText(incomingX+76,143,`${d.br||'-'}A ${poles} RCBO Incoming`,12);s+=svgText(incomingX+76,164,`${firstGE(breakers,(d.br||10)*1.25)}A ${poles} N + E COPPER BUSBAR`,12);
+ s+=`<line x1="42" y1="${barY}" x2="${w-42}" y2="${barY}" stroke="#f00" stroke-width="5" stroke-linecap="round"/><line x1="42" y1="${barY+19}" x2="${w-42}" y2="${barY+19}" stroke="#000" stroke-width="5" stroke-linecap="round"/>`;s+=svgText(24,barY+4,'L',13,'middle','#f00','700');s+=svgText(24,barY+23,'N',13,'middle','#000','700');
+ c.forEach((x,i)=>{const cx=startX+i*step;s+=`<circle cx="${cx}" cy="${barY}" r="3" fill="#000"/><line x1="${cx}" y1="${barY}" x2="${cx}" y2="${barY+44}" stroke="#f00" stroke-width="1.4"/><circle cx="${cx}" cy="${barY+44}" r="4" fill="#efecdf" stroke="#f00"/><circle cx="${cx}" cy="${barY+75}" r="4" fill="#efecdf" stroke="#f00"/><line x1="${cx-2}" y1="${barY+55}" x2="${cx+8}" y2="${barY+63}" stroke="#111"/><line x1="${cx}" y1="${barY+79}" x2="${cx}" y2="${barY+116}" stroke="#f00" stroke-width="1.3"/><rect x="${cx-16}" y="${barY+92}" width="32" height="24" fill="#efecdf" stroke="#111"/>`;s+=svgText(cx,barY+39,`${x.amp}A`,11,'middle','#111','500');s+=svgText(cx,barY+54,'SP MCB',10,'middle','#111','500');s+=svgText(cx,barY+109,'1',13,'middle','#111','500');s+=`<line x1="${cx}" y1="${barY+116}" x2="${cx}" y2="${barY+185}" stroke="#f00" stroke-width="1.2"/>`;s+=svgText(cx,barY+215,x.label,11,'middle','#111','500')});
+ s+=svgText(74,500,`Rules: SB ${state.rules.lightMcb}A / max ${state.rules.lightPts} boards per circuit · TS ${state.rules.socketMcb}A / max ${state.rules.socketPts} sockets · AC ${state.rules.acMcb}A dedicated · Geyser ${state.rules.geyserMcb}A dedicated`,10,'start','#c00','400');
+ s+=svgText(74,523,'Preliminary auto-generated SLD — verify final breaker, cable, voltage drop, fault level, coordination and local code.',10,'start','#c00','400');s+='</svg>';return s}
+function safeId(s){return String(s).replace(/[^a-zA-Z0-9_-]/g,'_')}
+function renderDiagrams(){const groups=groupData(),sel=$('diagramSelect')?.value||'ALL',host=$('diagramHost');if(!groups.length){host.innerHTML='<div class="empty">No SDB data. Build the load schedule first.</div>';return}const show=sel==='ALL'?groups:groups.filter(g=>g.key===sel);host.innerHTML=show.map(g=>`<div class="diagram-title"><h4>${esc(g.floor)} · ${esc(g.sdb)} · ${esc(g.label)}</h4><div class="legend"><span><i class="dot red"></i>Live</span><span><i class="dot black"></i>Neutral</span></div></div><div class="diagram-frame">${sdbSvg(g)}</div>`).join('')}
+function mainSldSvg(){const groups=groupData(),t=totals(),w=Math.max(1100,groups.length*95+260),h=520;let s=`<svg id="mainProjectSvg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${w} ${h}" width="${w}" height="${h}"><rect width="100%" height="100%" fill="#efecdf"/>`;s+=svgText(w/2,30,state.settings.projectName,18,'middle','#111','700');s+=svgText(w/2,52,'ELECTRICAL MAIN SINGLE LINE OVERVIEW',13,'middle','#111','600');s+=`<line x1="${w/2}" y1="68" x2="${w/2}" y2="110" stroke="#111" stroke-width="2"/>`;s+=svgText(w/2,85,'UTILITY / 11kV',10,'middle','#c00','600');s+=`<rect x="${w/2-70}" y="110" width="140" height="50" fill="#fff7e9" stroke="#111"/><text x="${w/2}" y="140" text-anchor="middle" font-family="Arial" font-size="12" font-weight="700">TRANSFORMER</text>`;s+=`<line x1="${w/2}" y1="160" x2="${w/2}" y2="190" stroke="#111" stroke-width="2"/><rect x="${w/2-170}" y="190" width="340" height="54" fill="none" stroke="#10a64a" stroke-width="5"/>`;s+=svgText(w/2,221,'LT PANEL / ATS',13,'middle','#111','700');s+=`<line x1="${w/2}" y1="244" x2="${w/2}" y2="275" stroke="#111" stroke-width="2"/><rect x="${w/2-120}" y="275" width="240" height="50" fill="none" stroke="#10a64a" stroke-width="5"/>`;s+=svgText(w/2,305,'MDB',14,'middle','#111','700');
+ const busY=355;s+=`<line x1="70" y1="${busY}" x2="${w-70}" y2="${busY}" stroke="#f00" stroke-width="4"/>`;groups.forEach((g,i)=>{const x=90+i*((w-180)/Math.max(1,groups.length-1));const d=groupDesign(g);s+=`<line x1="${x}" y1="${busY}" x2="${x}" y2="430" stroke="#2d6cdf" stroke-width="1.6"/><circle cx="${x}" cy="${busY}" r="3" fill="#111"/>`;s+=svgText(x,busY+18,`${d.br||'-'}A`,9,'middle','#111','600');s+=svgText(x,455,g.sdb,10,'middle','#111','700');s+=svgText(x,472,g.floor,9,'middle','#555','400');s+=svgText(x,488,fmt(d.demand,1)+'kW',9,'middle','#0a7a45','600')});s+=svgText(65,340,`Demand ${fmt(t.demand,1)} kW`,11,'start','#0a7a45','600');s+=svgText(65,324,`Connected ${fmt(t.connected,1)} kW`,11,'start','#c00','600');s+='</svg>';return s}
+function renderMainSld(){$('mainSldHost').innerHTML=mainSldSvg()}
+
+function svgToBlob(svg){return new Blob([svg],{type:'image/svg+xml;charset=utf-8'})}
+function downloadBlob(blob,name){const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(a.href),1000)}
+function selectedGroup(){const groups=groupData(),v=$('diagramSelect').value;return v==='ALL'?groups[0]:groups.find(g=>g.key===v)}
+function downloadSelectedSVG(){const g=selectedGroup();if(!g)return;downloadBlob(svgToBlob(sdbSvg(g)),`${safeId(g.floor+'_'+g.sdb)}_SLD.svg`)}
+function downloadSelectedPNG(){const g=selectedGroup();if(!g)return;const svg=sdbSvg(g),blob=svgToBlob(svg),url=URL.createObjectURL(blob),img=new Image();img.onload=()=>{const vb=img.width?{w:img.width,h:img.height}:{w:1200,h:600};const canvas=document.createElement('canvas');canvas.width=vb.w*2;canvas.height=vb.h*2;const ctx=canvas.getContext('2d');ctx.scale(2,2);ctx.drawImage(img,0,0,vb.w,vb.h);canvas.toBlob(b=>{if(b)downloadBlob(b,`${safeId(g.floor+'_'+g.sdb)}_SLD.png`);URL.revokeObjectURL(url)},'image/png')};img.src=url}
+function downloadMainSVG(){downloadBlob(svgToBlob(mainSldSvg()),'MAIN_SLD_OVERVIEW.svg')}
+
+function exportCSV(){const lines=[['FLOOR','SDB','AREA','EQUIPMENT','WATT','QTY','CONNECTED W','EMG QTY','EMG W']];state.rows.forEach(r=>lines.push([r.floor,r.sdb,r.label,r.equipment,r.watt,r.qty,r.watt*r.qty,r.emg,r.watt*r.emg]));const csv=lines.map(a=>a.map(v=>'"'+String(v??'').replaceAll('"','""')+'"').join(',')).join('\n');downloadBlob(new Blob([csv],{type:'text/csv'}),'Electrical_Load_Schedule.csv')}
+function saveProjectFile(){saveSilent();downloadBlob(new Blob([JSON.stringify(state,null,2)],{type:'application/json'}),safeId(state.settings.projectName||'Electrical_Project')+'.json')}
+function openProjectFile(ev){const f=ev.target.files?.[0];if(!f)return;const reader=new FileReader();reader.onload=()=>{try{const d=JSON.parse(reader.result);state=d;ensureState();renderAll();saveSilent();alert('Project loaded.')}catch(e){alert('Invalid project file.')}};reader.readAsText(f);ev.target.value=''}
+function ensureState(){state.settings=state.settings||{projectName:'New Building',floors:['GROUND'],df:.7};state.settings.floors=state.settings.floors?.length?state.settings.floors:['GROUND'];if(state.settings.df==null)state.settings.df=.7;state.rules={lightPts:3,socketPts:3,lightMcb:10,socketMcb:16,acMcb:20,geyserMcb:20,spare:1,threePhaseKW:7,...(state.rules||{})};state.templates=state.templates||[];state.placements=state.placements||[];state.rows=state.rows||[];state.fixtureMaster={...cloneFixtureMaster(),...(state.fixtureMaster||{})};state.importStats=state.importStats||{sourceSdb:0,physicalSdb:0,sourceFixture:0,buildingFixture:0,rows:0,file:''}}
+function restore(){try{const d=JSON.parse(localStorage.getItem('engrAvashElectricalV3')||'null');if(!d)return false;state=d;ensureState();return true}catch(e){return false}}
+function showSection(id){document.querySelectorAll('.section').forEach(x=>x.classList.toggle('active',x.id===id));document.querySelectorAll('.tabs button').forEach(x=>x.classList.toggle('active',x.dataset.section===id));if(id==='diagrams'){refreshDiagramSelect();renderDiagrams();renderMainSld()}if(id==='summary')renderSummary();window.scrollTo({top:document.querySelector('.tabs').offsetTop-78,behavior:'smooth'})}
+function renderEquipPills(){$('equipPills').innerHTML=Object.entries(equipment).map(([k,v])=>`<span class="pill">${esc(k)} · ${v}W</span>`).join('')}
+function renderAll(){$('projectName').value=state.settings.projectName||'New Building';$('globalDF').value=state.settings.df??.7;$('ruleLightPts').value=state.rules.lightPts;$('ruleSocketPts').value=state.rules.socketPts;$('ruleLightMcb').value=state.rules.lightMcb;$('ruleSocketMcb').value=state.rules.socketMcb;$('ruleAcMcb').value=state.rules.acMcb;$('ruleGeyserMcb').value=state.rules.geyserMcb;$('ruleSpare').value=state.rules.spare;$('ruleThreePhaseKW').value=state.rules.threePhaseKW;renderFloorPills();renderTemplates();renderPlacements();renderLoadRows();renderEquipPills();renderFixtureMaster();updateImportStats();recalc();renderDiagrams()}
+
+if(!restore()){
+  state.templates=[
+    {id:uid('tpl'),name:'UNIT A',fixtures:defaultFixtures()},
+    {id:uid('tpl'),name:'UNIT B',fixtures:defaultFixtures()},
+    {id:uid('tpl'),name:'COMMON',fixtures:defaultFixtures()}
+  ];
 }
-if(!restore()){addRows(24)}else renderRows();if(rows.length===0)addRows(24);initRef();applyLang();recalc();
+ensureState();renderAll();
 </script>
 </body>
 </html>
