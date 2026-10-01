@@ -315,12 +315,13 @@ let state={
 };
 let templateSeq=1, placementSeq=1, rowSeq=1;
 
-function tryLogin(){const v=$('gatePass').value;if(v===GATE_PASS){$('gateError').textContent='';try{sessionStorage.setItem('engrAvashAuthV2','ok')}catch(e){}unlockApp()}else{$('gateError').textContent='Incorrect password. Please try again.';$('gatePass').value='';$('gatePass').focus()}}
+function tryLogin(){const v=$('gatePass').value;if(v===GATE_PASS){$('gateError').textContent='';unlockApp()}else{$('gateError').textContent='Incorrect password. Please try again.';$('gatePass').value='';$('gatePass').focus()}}
 function unlockApp(){$('loginGate').style.display='none';$('appShell').style.display=''}
 function toggleGatePassword(){const p=$('gatePass');p.type=p.type==='password'?'text':'password';p.focus()}
-function logoutApp(){try{sessionStorage.removeItem('engrAvashAuthV2');localStorage.removeItem('engrAvashAuth')}catch(e){}$('appShell').style.display='none';$('loginGate').style.display='flex';$('gatePass').value='';$('gateError').textContent='';$('gatePass').type='password';$('gatePass').focus()}
+function logoutApp(){$('appShell').style.display='none';$('loginGate').style.display='flex';$('gatePass').value='';$('gateError').textContent='';$('gatePass').type='password';$('gatePass').focus()}
 $('gatePass').addEventListener('keydown',e=>{if(e.key==='Enter')tryLogin()});
-(function(){try{localStorage.removeItem('engrAvashAuth');if(sessionStorage.getItem('engrAvashAuthV2')==='ok')unlockApp();else $('gatePass').focus()}catch(e){$('gatePass').focus()}})();
+// Always require the password whenever the HTML file is opened or reloaded.
+(function(){try{sessionStorage.removeItem('engrAvashAuthV2');localStorage.removeItem('engrAvashAuth')}catch(e){}$('appShell').style.display='none';$('loginGate').style.display='flex';$('gatePass').value='';$('gatePass').type='password';$('gateError').textContent='';$('gatePass').focus()})();
 
 function esc(s){return String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]))}
 function uid(prefix){return prefix+'_'+Date.now().toString(36)+'_'+Math.random().toString(36).slice(2,7)}
